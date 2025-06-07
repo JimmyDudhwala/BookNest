@@ -11,6 +11,10 @@ import toast from "react-hot-toast"
 const page = () => {
   const user = useSelector((state: RootState) => state.user.user)
   const { data: products, isLoading, refetch } = useGetProductsBySellerIdQuery(user?._id)
+
+  const productList = products?.data
+  console.log(productList)
+  console.log(products)
   const [deleteProduct] = useDeleteProductByIdMutation()
 
   const handleDelete = async (productId: string) => {
@@ -42,8 +46,8 @@ const page = () => {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products?.length > 0 ? (
-          products.map((product: any) => (
+        {productList?.length > 0 ? (
+          productList.map((product: any) => (
             <Card key={product._id} className="border border-gray-200 hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 {/* Product Header */}

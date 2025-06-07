@@ -128,7 +128,7 @@ export const getProductBySellerId = async (req:Request, res:Response) =>{
         return response(res, 400, "Products Not found by this Seller Id for this id")
      }
 
-     response(res,200, 'products fetched by sellers id SuccessFully', products)
+     response(res,200, 'products fetched by sellers id SuccessFully', product)
     }catch(error){
         console.log(error);
         return response(res, 500, "Internal Server Error, please try again")

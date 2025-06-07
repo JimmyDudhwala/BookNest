@@ -22,13 +22,49 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
+// Fix 1: Define proper types for Razorpay
+interface RazorpayResponse {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayErrorResponse {
+  error: {
+    description: string;
+  };
+}
+
 declare global {
   interface Window {
-    Razorpay:any;
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
   }
 }
 
-const page = () => {
+interface RazorpayOptions {
+  key: string | undefined;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => Promise<void>;
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  theme: {
+    color: string;
+  };
+}
+
+interface RazorpayInstance {
+  on: (event: string, callback: (response: RazorpayErrorResponse) => void) => void;
+  open: () => void;
+}
+
+const Page = () => {
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -47,6 +83,9 @@ const page = () => {
   const wishlist = useSelector((state: RootState) => state.wishlist.items)
   const cart = useSelector((state: RootState) => state.cart)
 
+  // Fix 5: Move useSelector hook before any conditional returns
+  const SellerPhoneNumber = useSelector((state: RootState) => state.user.user)
+
   const [createOrUpdateOrderMutation] = useCreateOrUpdateOrderMutation()
   const { data: orderData, isLoading: isOrderLoading } = useGetOrdersByIdQuery(orderId || ' ')
 
@@ -60,11 +99,13 @@ useEffect(()=>{
   }
 },[orderData])
 
+// Fix 2: Add dependency array to useEffect
 useEffect(()=> {
   if(step === 'addresses' && !selectedAddress){
     setShowAddressDialog(true)
   }
-})
+}, [step, selectedAddress]) // Added dependency array
+
   useEffect(() => {
     if (cartData?.success && cartData?.data) {
       dispatch(setCart(cartData.data))
@@ -136,8 +177,8 @@ useEffect(()=> {
         }
       }
     } catch (error) {
-      const errorMessage = (error as any)?.data?.message || "An unexpected error occurred";
-      toast.error(errorMessage)
+      const errorMessage = "An unexpected error occurred";
+      toast.error(errorMessage + error)
     }
   }
 
@@ -238,14 +279,15 @@ const handlePayment = async () => {
     }
 
     // 3. Configure Razorpay options
-    const options = {
+    // Fix 3: Use proper typing instead of 'any'
+    const options: RazorpayOptions = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
       name: "Book Nest",
       description: "Book purchase",
       order_id: razorpayOrder.id,
-      handler: async (response: any) => {
+      handler: async (response: RazorpayResponse) => {
         try {
           // Important: Note the correct field names from Razorpay response
           const result = await createOrUpdateOrderMutation({
@@ -286,7 +328,8 @@ const handlePayment = async () => {
 
     // 4. Initialize Razorpay
     const razorpay = new window.Razorpay(options)
-    razorpay.on("payment.failed", (response: any) => {
+    // Fix 4: Use proper typing instead of 'any'
+    razorpay.on("payment.failed", (response: RazorpayErrorResponse) => {
       toast.error(`Payment Failed: ${response.error.description}`)
     })
 
@@ -299,8 +342,6 @@ const handlePayment = async () => {
     setIsProcessing(false)
   }
 }
-
-      const SellerPhoneNumber = useSelector((state: RootState) => state.user.user)
 
       if (cart.items.length === 0) {
         return (
@@ -421,7 +462,7 @@ const handlePayment = async () => {
                         }
                         {
                           <p>
-                            Phone : {SellerPhoneNumber.phoneNumber}
+                            Phone : {SellerPhoneNumber?.phoneNumber}
                           </p>
                         }
                         <div>
@@ -460,4 +501,4 @@ const handlePayment = async () => {
   )
 }
 
-export default page
+export default Page

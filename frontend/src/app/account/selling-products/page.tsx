@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Trash2, Package, IndianRupee } from "lucide-react"
 import Image from "next/image"
 import toast from "react-hot-toast"
+import { BookDetails } from "@/lib/types/type"
 
 const Page = () => {
   const user = useSelector((state: RootState) => state.user.user)
@@ -47,7 +48,7 @@ const Page = () => {
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {productList?.length > 0 ? (
-          productList.map((product: any) => (
+          productList.map((product: BookDetails) => (
             <Card key={product._id} className="border border-gray-200 hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 {/* Product Header */}
@@ -56,7 +57,6 @@ const Page = () => {
                     <Package className="h-4 w-4" />
                     <span className="font-medium text-sm">{product.category || "General"}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{product.subcategory || "hello"}</p>
                 </div>
 
                 {/* Product Image */}
@@ -75,7 +75,7 @@ const Page = () => {
                     <p className="text-sm text-gray-600">
                       Category: {product.category || "Exam/Test Preparation Books"}
                     </p>
-                    <p className="text-sm text-gray-600">Class: {product.class || "B.Com"}</p>
+                    <p className="text-sm text-gray-600">Class: {product.classType || "B.Com"}</p>
                   </div>
 
                   {/* Price */}
@@ -84,10 +84,10 @@ const Page = () => {
                       <IndianRupee className="h-4 w-4" />
                       {product.price}
                     </div>
-                    {product.originalPrice && product.originalPrice > product.price && (
+                    {product.price && product.price > product.finalPrice && (
                       <div className="flex items-center text-gray-400 line-through text-sm">
                         <IndianRupee className="h-3 w-3" />
-                        {product.originalPrice}
+                        {product.price}
                       </div>
                     )}
                   </div>

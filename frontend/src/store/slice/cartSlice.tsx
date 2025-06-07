@@ -20,11 +20,11 @@ const cartSlice =  createSlice({
     name:"cart",
     initialState,
     reducers:{
-        setCart:(state, action: PayloadAction<any>) => {
+        setCart:(state, action: PayloadAction<CartState>) => {
             return {...state, ...action.payload}
         },
         
-        addToCart:(state, action: PayloadAction<any>) => {
+        addToCart:(state, action: PayloadAction<CartState>) => {
             return {...state, ...action.payload}
         },
 

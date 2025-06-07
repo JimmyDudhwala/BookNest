@@ -51,7 +51,7 @@ const ProfilePage = () => {
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
-    phone: user?.phone || "",
+    phone: user?.phoneNumber || "",
   })
 
   const addresses = addressData?.data?.address || []
@@ -92,7 +92,7 @@ const ProfilePage = () => {
     setFormData({
       name: user?.name || "",
       email: user?.email || "",
-      phone: user?.phone || "",
+      phone: user?.phoneNumber || "",
     })
     setIsEditing(false)
   }

@@ -21,17 +21,17 @@ import { useGetProductsQuery } from '@/store/api'
 import { BookDetails } from '@/lib/types/type'
 
  
-const page = () => {
+const Page = () => {
 
     const [currentPage, setCurrentPage] = useState(1)
     const [selectedCondition, setSelectedCondition] = useState<string[]>([])
     const [selectedType, setSelectedType] = useState<string[]>([])
     const [selectedCategory, setSelectedCategory] = useState<string[]>([])
     const [sortOption, setSortOption] = useState("newest")
-    const [isLoding, setIsLoading] = useState(false)
+    const [isLoding] = useState(false)
     const [books, setBooks] = useState<BookDetails[]>([])
     const router = useRouter()
-    const {data:apiResponse={}, isLoading} = useGetProductsQuery({})
+    const {data:apiResponse={}} = useGetProductsQuery({})
 
     useEffect(()=>{
         if(apiResponse.data){
@@ -242,4 +242,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

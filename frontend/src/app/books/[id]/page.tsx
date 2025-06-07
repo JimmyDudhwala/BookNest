@@ -12,7 +12,7 @@ import { setCheckoutStep } from '@/store/slice/checkoutSlice'
 import {  addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice'
 import { RootState } from '@/store/store'
 import { formatDistanceToNow } from 'date-fns'
-import { CheckCircle2, Heart, Loader2, MapPin, MessageCircle, Section, ShoppingCart, User2 } from 'lucide-react'
+import { CheckCircle2, Heart, Loader2, MapPin, MessageCircle, ShoppingCart, User2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'  
@@ -20,7 +20,7 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 
-const page = () => {
+const Page = () => {
 
   const params = useParams()
   const id = params.id
@@ -68,8 +68,8 @@ const page = () => {
             throw new Error(result.message || "Failed to add Product")
           }
         }catch(error){
-            const errorMessage = (error as any)?.data?.message || "An unexpected error occurred";
-            toast.error(errorMessage)
+            const errorMessage =  "An unexpected error occurred";
+            toast.error(errorMessage + error)
         }finally{
           setIsAddToCart(false)
         }
@@ -99,8 +99,8 @@ const page = () => {
           }
         }
       }catch(error){
-        const errorMessage = (error as any)?.data?.message || "An unexpected error occurred";
-            toast.error(errorMessage) 
+        const errorMessage =  "An unexpected error occurred";
+            toast.error(errorMessage + error) 
       }
     }
 
@@ -279,7 +279,7 @@ const page = () => {
                           Our Community
                         </h3>
                         <p className='text-muted-foreground'>
-                          We're not just another shopping website where you buy from professional sellers - we are a vibrant community of students, book lovers across India who deliver happiness to each other!
+                          We&apos;re not just another shopping website where you buy from professional sellers - we are a vibrant community of students, book lovers across India who deliver happiness to each other!
                         </p>
                       </div>
                       <div className='flex item-center gap-4 text-sm text-muted-foreground'>
@@ -392,4 +392,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

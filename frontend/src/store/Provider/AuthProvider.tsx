@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store"; // Adjust the path to where your store is defined
 import { logout, setEmailVerified, setUser } from "../slice/userSlice";
 import BookLoader from "@/lib/BookLoader";
+import toast from "react-hot-toast";
 
 
 export default function AuthCheck({children}:{children:React.ReactNode}){
@@ -28,6 +29,7 @@ export default function AuthCheck({children}:{children:React.ReactNode}){
                 }
             }catch(error){
                 dispatch(logout())
+                toast("logout" + error)
             }
             finally{
                 setIsCheckingAuth(false)
@@ -39,7 +41,7 @@ export default function AuthCheck({children}:{children:React.ReactNode}){
         }else{
             setIsCheckingAuth(false)
         }
-    },[verifyAuth, dispatch, user])
+    },[verifyAuth, dispatch, user, isLoggedIn]) // Added isLoggedIn to dependency array
 
     if(isLoading || isCheckingAuth){
         return <BookLoader />

@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, Mail, Package, Eye, Home } from "lucide-react"
-import type { Order } from "@/lib/types/type"
+import type { Order, OrderItem } from "@/lib/types/type"
 import toast from "react-hot-toast"
 import { useGetOrdersByIdQuery } from "@/store/api"
 import { useDispatch } from "react-redux"
@@ -44,7 +44,7 @@ export default function OrderSuccessPage() {
         toast.error(orderData.message || "Failed to load order details")
       }
     }
-  }, [orderData])
+  })
 
   useEffect(() => {
     if (error) {
@@ -173,13 +173,13 @@ export default function OrderSuccessPage() {
               <div className="mt-8">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Order Items</h3>
                 <div className="space-y-3">
-                  {orderDetails.items.map((item: any, index: number) => (
+                  {orderDetails.items.map((item:OrderItem, index: number) => (
                     <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                       <div>
-                        <p className="font-medium">{item.name || `Item ${index + 1}`}</p>
+                        <p className="font-medium">{item.product.title || `Item ${index + 1}`}</p>
                         <p className="text-sm text-gray-600">Quantity: {item.quantity || 1}</p>
                       </div>
-                      <p className="font-semibold">₹{formatAmount(item.price || 0)}</p>
+                      <p className="font-semibold">₹{formatAmount(item.product.finalPrice || 0)}</p>
                     </div>
                   ))}
                 </div>

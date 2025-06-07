@@ -33,10 +33,6 @@ interface SignupForm{
 interface ForgotForm{
   email: string;
 }
-interface ResetForm{
-  password: string;
-  confirmPassword: string;  
-}
 
 const AuthPage: React.FC<AuthPageProps> = ({isLoginOpen, setIsLoginOpen}) => {
     const [currentTab, setCurrentTab] = useState<"login" | "signup" | "forgot">('login');
@@ -71,7 +67,7 @@ const AuthPage: React.FC<AuthPageProps> = ({isLoginOpen, setIsLoginOpen}) => {
           }
 
         }catch(errors){
-          toast.error("email already register")
+          toast.error("email already register" + errors)
         }
         finally{
           setSignupLoading(false)
@@ -93,9 +89,9 @@ const AuthPage: React.FC<AuthPageProps> = ({isLoginOpen, setIsLoginOpen}) => {
           window.location.reload()
         }
 
-      }catch(errors:any){ 
-        toast.error(errors.data.message)
-      }
+      }catch(errors){ 
+        toast.error("Submitting failed" + errors)
+      } 
       finally{
         setLoginLoading(false)
 
@@ -115,8 +111,8 @@ const AuthPage: React.FC<AuthPageProps> = ({isLoginOpen, setIsLoginOpen}) => {
         toast.success("google login successfully")
         setIsLoginOpen(false)
       }, 3000)
-    }catch(errors:any){ 
-      toast.error(errors.data.message)
+    }catch(errors){ 
+      toast.error("Google Login failed" + errors)
     }
     finally{
       setGoogleLoading(false)
@@ -137,8 +133,8 @@ const onSubmitForgotPassword = async(data:ForgotForm) => {
       setForgotPasswordSuccess(true)
     }
 
-  }catch(errors:any){ 
-    toast.error("failed to send the forgot password link")
+  }catch(errors){ 
+    toast.error("failed to send the forgot password link" + errors)
   }
   finally{
     setForgetLoading(false)
@@ -424,7 +420,7 @@ const onSubmitForgotPassword = async(data:ForgotForm) => {
      </AnimatePresence>
         </Tabs>
         <p className='text-sm text-gray-600 text-center'>
-            by clicking "agree", you agree to our <Link onClick={()=>setIsLoginOpen(false)} href="/terms&Condition" className='text-blue-500 cursor-pointer hover:underline'>Terms of Service</Link> and <Link href="/privacyPolicy" onClick={()=>setIsLoginOpen(false)} className='text-blue-500 cursor-pointer hover:underline'>Privacy Policy</Link>
+            by clicking &quot;agree&quot;, you agree to our <Link onClick={()=>setIsLoginOpen(false)} href="/terms&Condition" className='text-blue-500 cursor-pointer hover:underline'>Terms of Service</Link> and <Link href="/privacyPolicy" onClick={()=>setIsLoginOpen(false)} className='text-blue-500 cursor-pointer hover:underline'>Privacy Policy</Link>
         </p>
       </DialogContent>
     </Dialog>

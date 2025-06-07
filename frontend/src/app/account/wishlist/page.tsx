@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Trash2, ShoppingCart, Check, IndianRupee } from "lucide-react"
 import Image from "next/image"
 import toast from "react-hot-toast"
+import { BookDetails, CartItem } from "@/lib/types/type"
 
 const WishlistPage = () => {
   const user = useSelector((state: RootState) => state.user.user)
@@ -41,9 +42,8 @@ const WishlistPage = () => {
   }
 
   const isInCart = (productId: string) => {
-    return cart?.data.items?.some((item: any) => item.product._id === productId)
+    return cart?.data.items?.some((item: CartItem) => item.product._id === productId)
   }
-  console.log(cart)
 
   if (isLoading) {
     return (
@@ -69,7 +69,7 @@ const WishlistPage = () => {
       {/* Wishlist Items */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {wishlist?.data.products?.length > 0 ? (
-          wishlist.data.products.map((product: any) => (
+          wishlist.data.products.map((product:BookDetails) => (
             <Card key={product._id} className="border border-gray-200 hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 {/* Product Image */}

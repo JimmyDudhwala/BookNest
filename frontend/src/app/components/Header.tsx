@@ -95,7 +95,7 @@ const Header = () => {
       toast.success("user logout Successfully")
       setIsDropdownOpen(false)
     }catch(error){
-      toast.error("failed to logout")
+      toast.error("failed to logout" + error)
     }
   };
 

@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { filters } from "@/lib/Constant"
+import Image from "next/image"
 
 const SellPage = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
@@ -89,7 +90,7 @@ const SellPage = () => {
       }
 
       console.log("Form Data to Submit:");
-for (let [key, value] of formData.entries()) {
+for (const [key, value] of formData.entries()) {
   console.log(`${key}:`, value);
 }
 
@@ -207,7 +208,7 @@ for (let [key, value] of formData.entries()) {
                       <RadioGroup key="field" onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-6">
                         {
                           filters.condition.map((condition)=>(
-                            <div className="flex items-center space-x-2">
+                            <div key={condition} className="flex items-center space-x-2">
                             <RadioGroupItem value={condition} id={condition} />
                             <Label htmlFor="excellent">{condition}</Label>
                           </div>
@@ -295,9 +296,11 @@ for (let [key, value] of formData.entries()) {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                       {uploadedImages.map((image, index) => (
                         <div key={index} className="relative">
-                          <img
+                          <Image
                             src={(image as string) || "/placeholder.svg"}
                             alt={`Uploaded ${index + 1}`}
+                            width={96}
+                            height={96}
                             className="h-24 w-full object-cover rounded-md"
                           />
                           <button
@@ -579,7 +582,7 @@ for (let [key, value] of formData.entries()) {
               }
             </Button>
             <p className="text-gray-600 text-sm mt-4 text-center">
-              By clicking "Post Your Book", you agree to our{" "}
+              By clicking &quot;Post Your Book&quot;, you agree to our{" "}
               <Link href="/terms-of-use" className="text-blue-500 hover:underline">
                 Terms of Use
               </Link>

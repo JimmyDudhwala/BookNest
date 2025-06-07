@@ -72,7 +72,7 @@ export interface paymentDetails {
 export interface Order {
     _id:string;
     user:UserData;
-    items:OrderItem;
+    items:OrderItem[];
     createdAt:Date
     totalAmount:number;
     shippingAddress:Address,
@@ -81,4 +81,21 @@ export interface Order {
     paymentDetails:string
     status:string
 
+}
+
+export interface User {
+    _id:string
+    avatar?:string
+    name: string;
+    email?: string;
+    password?: string;
+    phoneNumber?: string;
+    googleId: string;
+    profilePicture?: string;
+    isVerified: boolean;
+    verificationToken?: string;
+    resetPasswordToken?: string;
+    resetPasswordExpires?: Date;
+    agreeTerms: boolean;
+    addresses: Address[];
 }

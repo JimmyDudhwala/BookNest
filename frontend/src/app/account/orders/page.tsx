@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Eye, Package } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
+import { Order, OrderItem } from "@/lib/types/type"
 
 const Page = () => {
     const router  = useRouter()
@@ -53,7 +54,7 @@ const Page = () => {
       {/* Orders List */}
       <div className="space-y-4">
         {displayedOrders?.length > 0 ? (
-          displayedOrders.map((order: any) => (
+          displayedOrders.map((order: Order) => (
             <Card key={order._id} className="border border-gray-200 hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
@@ -72,7 +73,7 @@ const Page = () => {
 
                     {/* Order Items */}
                     <div className="space-y-2">
-                      {order.items?.map((item: any, index: number) => (
+                      {order.items?.map((item: OrderItem, index: number) => (
                         <div key={index}>
                           <h4 className="font-medium text-gray-800">{item.product?.title || "Product"}</h4>
                           <p className="text-sm text-gray-600">

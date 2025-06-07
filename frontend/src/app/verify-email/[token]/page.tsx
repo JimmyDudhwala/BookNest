@@ -105,7 +105,7 @@ const VerifyEmailPage: React.FC = () => {
               <AlertCircle className="w-16 h-16 text-red-600 mx-auto" />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">Verification Failed</h1>
-            <p className="text-gray-600 mb-6">We couldn't verify your email. The link may be expired or invalid.</p>
+            <p className="text-gray-600 mb-6">We couldn&apos;t verify your email. The link may be expired or invalid.</p>
             <div className="space-y-3">
               <Link
                 href="/resend-verification"

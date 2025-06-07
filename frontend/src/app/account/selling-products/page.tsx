@@ -8,7 +8,7 @@ import { Trash2, Package, IndianRupee } from "lucide-react"
 import Image from "next/image"
 import toast from "react-hot-toast"
 
-const page = () => {
+const Page = () => {
   const user = useSelector((state: RootState) => state.user.user)
   const { data: products, isLoading, refetch } = useGetProductsBySellerIdQuery(user?._id)
 
@@ -122,4 +122,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

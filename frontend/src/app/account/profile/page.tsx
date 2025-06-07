@@ -26,13 +26,6 @@ interface Address {
   pincode: string
 }
 
-interface AddressResponse {
-  success: boolean
-  message: string
-  data: {
-    address: Address[]
-  }
-}
 
 const AddressFormSchema = zod.object({
   addressLine1: zod.string().min(5, "Address Line 1 must be at least 5 characters"),

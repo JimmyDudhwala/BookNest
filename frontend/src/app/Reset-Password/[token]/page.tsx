@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+interface ApiError {
+  data?: {
+    message?: string
+  }
+  message?: string
+}
+
 const ResetPasswordPage: React.FC = () => {
   const { token } = useParams<{ token: string }>()
   const router = useRouter()
@@ -68,10 +75,11 @@ const ResetPasswordPage: React.FC = () => {
       } else {
         throw new Error(result.message || "Password reset failed")
       }
-    } catch (error: any) {
-      console.error(error)
+    } catch (error) {
+      const apiError = error as ApiError
+      console.error(apiError)
       setResetStatus("failed")
-      toast.error(error.data?.message || "Password reset failed")
+      toast.error(apiError.data?.message || "Password reset failed")
     }
   }
 
@@ -195,7 +203,7 @@ const ResetPasswordPage: React.FC = () => {
               <AlertCircle className="w-16 h-16 text-red-600 mx-auto" />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">Reset Failed</h1>
-            <p className="text-gray-600 mb-6">We couldn't reset your password. The link may be expired or invalid.</p>
+            <p className="text-gray-600 mb-6">We couldn&apos;t reset your password. The link may be expired or invalid.</p>
             <div className="space-y-3">
               <Link
                 href="/forgot-password"

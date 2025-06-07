@@ -23,7 +23,7 @@ const wishlistSlice = createSlice({
         setWishlist:(state, action:PayloadAction<any>)=>{
             state.items = action.payload
         },
-        clearWishlist:(state, action:PayloadAction<any>)=>{
+        clearWishlist:(state)=>{
             state.items = []
         },
         addToWishlist:(state, action:PayloadAction<WishListItem>)=>{

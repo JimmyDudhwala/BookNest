@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import {
   ChevronDown,
   ChevronUp,
-  Search,
   MessageCircle,
   Mail,
   Phone,
@@ -23,8 +22,8 @@ import {
   Settings,
 } from "lucide-react"
 
-export default function page() {
-  const [searchQuery, setSearchQuery] = useState("")
+export default function Page() {
+  const [searchQuery] = useState("")
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [contactForm, setContactForm] = useState({
     name: "",

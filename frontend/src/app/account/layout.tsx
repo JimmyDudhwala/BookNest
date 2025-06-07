@@ -12,7 +12,7 @@ import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathName = usePathname()
   const user = useSelector((state: RootState) => state.user.user)
   const [logoutMutation] = useLogoutMutation()
@@ -145,4 +145,4 @@ const layout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export default layout
+export default Layout

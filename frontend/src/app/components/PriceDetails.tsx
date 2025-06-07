@@ -20,7 +20,6 @@ interface PriceDetailsProp {
 const PriceDetails: React.FC<PriceDetailsProp> = ({
   totalAmount,
   totalDiscount,
-  shippingCharge,
   totalOriginalAmount,
   itemCount,
   isProcessing,

@@ -9,7 +9,7 @@ import { Calendar, Eye, Package } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 
-const page = () => {
+const Page = () => {
     const router  = useRouter()
   const user = useSelector((state: RootState) => state.user.user)
   const { data: orders, isLoading } = useGetUserOrdersQuery(user?._id)
@@ -126,4 +126,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

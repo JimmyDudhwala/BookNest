@@ -80,13 +80,13 @@ const Header = () => {
   },[cartData, dispatch])
 
   const handleProtectionNavigation = (href: string) => {
-    // if (user) {
-    //   router.push(href);
-    //   setIsDropdownOpen(false);
-    // } else {
-    //   dispatch(toggleLoginDialog());
-    //   setIsDropdownOpen(false);
-    // }
+    if (user) {
+      router.push(href);
+      setIsDropdownOpen(false);
+    } else {
+      dispatch(toggleLoginDialog());
+      setIsDropdownOpen(false);
+    }
   };
   const handleLogout = async () => {
     try{
@@ -136,22 +136,22 @@ const Header = () => {
     {
       icon: <Package2 className="h-5 w-5" />,
       label: 'My orders',
-      onclick: handleProtectionNavigation('/account/orders'),
+      onclick: () =>  handleProtectionNavigation('/account/orders'),
     },
     {
       icon: <Lock className="h-5 w-5" />,
       label: 'My selling Orders',
-      onclick: handleProtectionNavigation('/account/selling-products'),
+      onclick:  () => handleProtectionNavigation('/account/selling-products'),
     },
     {
       icon: <ShoppingCart className="h-5 w-5" />,
       label: 'Cart',
-      onclick: handleProtectionNavigation('/checkout/cart'),
+      onclick: () =>  handleProtectionNavigation('/checkout/cart'),
     },
     {
       icon: <Heart className="h-5 w-5" />,
       label: 'My WishList',
-      onclick: handleProtectionNavigation('/account/wishlist'),
+      onclick: () =>  handleProtectionNavigation('/account/wishlist'),
     },
     {
       icon: <User2 className="h-5 w-5" />,

@@ -78,6 +78,8 @@ useEffect(()=> {
       toast.error("Error removing item");
     }
   };
+
+
   
 
 
@@ -199,25 +201,33 @@ useEffect(()=> {
     }
   }
 
-  const handleSelectAddress = async (address:Address) => {
-      setSelectedAddress(address)
-      setShowAddressDialog(false)
-      if(orderId){
+  const handleSelectAddress = async (address: Address) => {
+    console.log("hit")
+    setSelectedAddress(address)
+    setShowAddressDialog(false)
+    if(orderId){
         try{
-          await createOrUpdateOrderMutation({updates:{orderId, shippingAddress:address}}).unwrap()
-          toast.success('Address updated successfully')
+            // Fix: Pass data in the expected format
+            await createOrUpdateOrderMutation({
+                orderId, 
+                orderData: { orderId, shippingAddress: address }
+            }).unwrap()
+            toast.success('Address updated successfully')
         }catch(error){
-          console.log(error)
-          toast.error('Failed to update Address')
+            console.log(error)
+            toast.error('Failed to update Address')
         }
-      }
-  }
-
+    }
+}
 
  
   const handlePayment = async() => {
 
   }
+
+
+      const SellerPhoneNumber = useSelector((state: RootState) => state.user.user)
+
   return (
     <div className='min-h-screen bg-white'>
       <div className='bg-gray-100 py-4 px-6 mb-8'>
@@ -313,7 +323,7 @@ useEffect(()=> {
                         }
                         {
                           <p>
-                            Phone : {selectedAddress.phoneNumber}
+                            Phone : {SellerPhoneNumber.phoneNumber}
                           </p>
                         }
                         <div>
@@ -340,7 +350,7 @@ useEffect(()=> {
                   </DialogTitle>
                 </DialogHeader>
                 <CheckoutAddress
-                  onAddressSelect={()=>handleSelectAddress}
+                  onAddressSelect={handleSelectAddress}
                   selectedAddress={selectedAddress?._id}
                 />
               </DialogContent>

@@ -8,7 +8,7 @@ import { Heart, Trash2, ShoppingCart, Check, IndianRupee } from "lucide-react"
 import Image from "next/image"
 import toast from "react-hot-toast"
 
-const page = () => {
+const WishlistPage = () => {
   const user = useSelector((state: RootState) => state.user.user)
   const { data: wishlist, isLoading, refetch } = useGetWishlistQuery(user?._id)
   const { data: cart } = useGetCartQuery(user?._id)
@@ -41,8 +41,9 @@ const page = () => {
   }
 
   const isInCart = (productId: string) => {
-    return cart?.items?.some((item: any) => item.product._id === productId)
+    return cart?.data.items?.some((item: any) => item.product._id === productId)
   }
+  console.log(cart)
 
   if (isLoading) {
     return (
@@ -67,15 +68,15 @@ const page = () => {
 
       {/* Wishlist Items */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {wishlist?.items?.length > 0 ? (
-          wishlist.items.map((item: any) => (
-            <Card key={item._id} className="border border-gray-200 hover:shadow-lg transition-shadow">
+        {wishlist?.data.products?.length > 0 ? (
+          wishlist.data.products.map((product: any) => (
+            <Card key={product._id} className="border border-gray-200 hover:shadow-lg transition-shadow">
               <CardContent className="p-0">
                 {/* Product Image */}
                 <div className="relative h-48 bg-gray-100">
                   <Image
-                    src={item.product?.images?.[0] || "/placeholder.svg?height=200&width=300"}
-                    alt={item.product?.title || "Product"}
+                    src={product?.images?.[0] || "/placeholder.svg?height=200&width=300"}
+                    alt={product?.title || "Product"}
                     fill
                     className="object-cover rounded-t-lg"
                   />
@@ -83,18 +84,18 @@ const page = () => {
 
                 {/* Product Details */}
                 <div className="p-4 space-y-3">
-                  <h3 className="font-semibold text-gray-800 line-clamp-2">{item.product?.title || "Product Title"}</h3>
+                  <h3 className="font-semibold text-gray-800 line-clamp-2">{product?.title || "Product Title"}</h3>
 
                   {/* Price */}
                   <div className="flex items-center text-lg font-bold text-gray-800">
                     <IndianRupee className="h-4 w-4" />
-                    {item.product?.price || "0.00"}
+                    {product?.price || "0.00"}
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleRemoveFromWishlist(item.product._id)}
+                      onClick={() => handleRemoveFromWishlist(product._id)}
                       variant="outline"
                       size="sm"
                       className="flex-1"
@@ -102,14 +103,14 @@ const page = () => {
                       <Trash2 className="h-4 w-4" />
                     </Button>
 
-                    {isInCart(item.product._id) ? (
+                    {isInCart(product._id) ? (
                       <Button disabled size="sm" className="flex-1 bg-gray-500 hover:bg-gray-500">
                         <Check className="h-4 w-4 mr-2" />
                         Item in Cart
                       </Button>
                     ) : (
                       <Button
-                        onClick={() => handleAddToCart(item.product._id)}
+                        onClick={() => handleAddToCart(product._id)}
                         size="sm"
                         className="flex-1 bg-black hover:bg-gray-800"
                       >
@@ -138,4 +139,4 @@ const page = () => {
   )
 }
 
-export default page
+export default WishlistPage

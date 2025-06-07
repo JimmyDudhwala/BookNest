@@ -6,22 +6,27 @@ import PriceDetails from '@/app/components/PriceDetails';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { DialogContent, DialogHeader } from '@/components/ui/dialog';
+import BookLoader from '@/lib/BookLoader';
 import { Address } from '@/lib/types/type';
 import { useAddToWishlistMutation, useCreateOrUpdateOrderMutation, useCreateRazorpayPaymentMutation, useGetCartQuery, useGetOrdersByIdQuery, useRemoveFromCartMutation, useRemoveFromWishlistMutation } from '@/store/api';
-import { setCart } from '@/store/slice/cartSlice';
-import { setCheckoutStep, setOrderId } from '@/store/slice/checkoutSlice';
+import { clearCart, setCart } from '@/store/slice/cartSlice';
+import { resetCheckout, setCheckoutStep, setOrderId } from '@/store/slice/checkoutSlice';
 import { toggleLoginDialog } from '@/store/slice/userSlice';
 import { addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice';
 import { RootState } from '@/store/store';
-import { Dialog, DialogTitle } from '@radix-ui/react-dialog';
-import { error } from 'console';
-import { Car, ChevronRight, CreditCard, MapPin, ShoppingCart } from 'lucide-react';
-import { steps } from 'motion/react';
-import { Butcherman } from 'next/font/google';
+import {  Dialog, DialogTitle } from '@radix-ui/react-dialog';
+import {  ChevronRight, CreditCard, MapPin, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
+
+declare global {
+  interface Window {
+    Razorpay:any;
+  }
+}
 
 const page = () => {
 
@@ -33,7 +38,7 @@ const page = () => {
   const [ShowAddressDialog, setShowAddressDialog] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const { data: cartData } = useGetCartQuery(user?._id, { skip: !user })
+  const { data: cartData, isLoading:isCartLoading } = useGetCartQuery(user?._id, { skip: !user })
 
   const [removeFromCartMutation] = useRemoveFromCartMutation()
   const [addToWishlistMutation] = useAddToWishlistMutation()
@@ -209,10 +214,87 @@ useEffect(()=> {
 }
 
  
-  const handlePayment = async() => {
-
+const handlePayment = async () => {
+  if (!orderId) {
+    toast.error("No Order Found")
+    return
   }
 
+  setIsProcessing(true)
+
+  try {
+    // 1. Create Razorpay order
+    const { data, error } = await createRazorpayPayment(orderId)
+
+    if (error || !data?.success) {
+      throw new Error("Failed to create payment")
+    }
+
+    const razorpayOrder = data.data
+
+    // 2. Check if Razorpay is loaded
+    if (typeof window.Razorpay === "undefined") {
+      throw new Error("Razorpay SDK failed to load. Please check your internet connection.")
+    }
+
+    // 3. Configure Razorpay options
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      name: "Book Nest",
+      description: "Book purchase",
+      order_id: razorpayOrder.id,
+      handler: async (response: any) => {
+        try {
+          // Important: Note the correct field names from Razorpay response
+          const result = await createOrUpdateOrderMutation({
+            orderData: {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            },
+            orderId: orderId,
+          }).unwrap()
+
+          if (result.success) {
+            dispatch(clearCart())
+            dispatch(resetCheckout())
+            toast.success("Payment Successful")
+            router.push(`/checkout/payment-success?orderId=${orderId}`)
+          } else {
+            throw new Error(result.message)
+          }
+        } catch (error) {
+          console.error(error)
+          toast.error("Payment Successful, but failed to update Order")
+        }
+      },
+      prefill: {
+        name: orderData?.data?.user?.name || "",
+        email: orderData?.data?.user?.email || "",
+        contact: orderData?.data?.user?.phoneNumber || "",
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    }
+
+    // 4. Initialize Razorpay
+    const razorpay = new window.Razorpay(options)
+    razorpay.on("payment.failed", (response: any) => {
+      toast.error(`Payment Failed: ${response.error.description}`)
+    })
+
+    // 5. Open Razorpay
+    razorpay.open()
+  } catch (error) {
+    console.error("Payment initialization error:", error)
+    toast.error("Failed to initiate payment. Please try again.")
+  } finally {
+    setIsProcessing(false)
+  }
+}
 
       const SellerPhoneNumber = useSelector((state: RootState) => state.user.user)
 
@@ -228,9 +310,19 @@ useEffect(()=> {
           />
         );
       }
+
+      if(isCartLoading || isOrderLoading){
+        return <BookLoader/>
+      }
     
 
   return (
+    <>
+    
+    <Script
+    id="razorpay-checkout-js"
+    src="https://checkout.razorpay.com/v1/checkout.js"
+   />
     <div className='min-h-screen bg-white'>
       <div className='bg-gray-100 py-4 px-6 mb-8'>
         <div className='container mx-auto  flex items-center'>
@@ -360,6 +452,7 @@ useEffect(()=> {
 
       </div>
     </div>
+    </>
   )
 }
 

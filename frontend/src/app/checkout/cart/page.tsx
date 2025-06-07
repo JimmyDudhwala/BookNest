@@ -1,10 +1,18 @@
 'use client'
+import CardItem from '@/app/components/CardItem';
 import NoData from '@/app/components/NoData';
-import { useAddToWishlistMutation, useGetCartQuery, useRemoveFromCartMutation, useRemoveFromWishlistMutation } from '@/store/api';
+import PriceDetails from '@/app/components/PriceDetails';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Address } from '@/lib/types/type';
+import { useAddToWishlistMutation, useCreateOrUpdateOrderMutation, useCreateRazorpayPaymentMutation, useGetCartQuery, useGetOrdersByIdQuery, useRemoveFromCartMutation, useRemoveFromWishlistMutation } from '@/store/api';
 import { setCart } from '@/store/slice/cartSlice';
+import { setCheckoutStep, setOrderId } from '@/store/slice/checkoutSlice';
 import { toggleLoginDialog } from '@/store/slice/userSlice';
 import { addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice';
 import { RootState } from '@/store/store';
+import { error } from 'console';
+import { Car, ChevronRight, CreditCard, MapPin, ShoppingCart } from 'lucide-react';
+import { steps } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -12,64 +20,82 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const page = () => {
 
-    const router = useRouter();
-    const dispatch = useDispatch();
+  const router = useRouter();
+  const dispatch = useDispatch();
 
-    const user = useSelector((state: RootState) => state.user.user);
-    const {orderId, step}  =  useSelector((state: RootState) => state.checkout);
-    const [ShowAddressDialog, setShowAddressDialog] = useState(false);
-    const [isProcessing, setIsProcessing] = useState(false)
+  const user = useSelector((state: RootState) => state.user.user);
+  const { orderId, step } = useSelector((state: RootState) => state.checkout);
+  const [ShowAddressDialog, setShowAddressDialog] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false)
 
-      const {data:cartData} = useGetCartQuery(user?._id, {skip:!user})
-      
-        const [removeFromCartMutation] = useRemoveFromCartMutation()
-        const [addToWishlistMutation] = useAddToWishlistMutation()
-        const [removeFromWishlistMutation] = useRemoveFromWishlistMutation()
+  const { data: cartData } = useGetCartQuery(user?._id, { skip: !user })
 
-          const wishlist = useSelector((state : RootState) => state.wishlist.items)
-          const cart = useSelector((state : RootState) => state.cart)
-        
-        
-          useEffect(()=>{
-            if(cartData?.success && cartData?.data){
-              dispatch(setCart(cartData.data))
-            }
-          },[cartData, dispatch])
+  const [removeFromCartMutation] = useRemoveFromCartMutation()
+  const [addToWishlistMutation] = useAddToWishlistMutation()
+  const [removeFromWishlistMutation] = useRemoveFromWishlistMutation()
 
-          const handleRemoveItem = async(productId:string) => {
-            try{
-                const  result = await removeFromCartMutation(productId).unwrap();
-                if(result.success && result.data){
-                    dispatch(setCart(result.data))
-                    toast.success(result.message || 'Item removed successfully')
-                }
-            }catch(error){
-                console.log(error)
-                toast.error("error")
-            }
-          }
+  const wishlist = useSelector((state: RootState) => state.wishlist.items)
+  const cart = useSelector((state: RootState) => state.cart)
 
+  const [createOrUpdateOrderMutation] = useCreateOrUpdateOrderMutation()
+  const { data: orderData, isLoading: isOrderLoading } = useGetOrdersByIdQuery(orderId || ' ')
 
-    if (cart.items.length === 0) {
-        return (
-          <NoData
-            message="Your cart is empty."
-            description="Looks like you haven't added any items yet. 
-            Explore our collection and find something you love!"
-            buttonText="Browse Books"
-            imageUrl="/images/cart.webp" 
-            onClick={() => router.push('/books')}
-          />
-        );
+const  [createRazorpayPayment] = useCreateRazorpayPaymentMutation();
+
+const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
+
+useEffect(()=>{
+  if(orderData && orderData.shippingAddress){
+    setSelectedAddress(orderData.shippingAddress)
+  }
+},[orderData])
+
+useEffect(()=> {
+  if(step === 'addresses' && !selectedAddress){
+    setShowAddressDialog(true)
+  }
+})
+  useEffect(() => {
+    if (cartData?.success && cartData?.data) {
+      dispatch(setCart(cartData.data))
+    }
+  }, [cartData, dispatch])
+
+  const handleRemoveItem = async (cartItemId: string) => {
+    try {
+      const result = await removeFromCartMutation(cartItemId).unwrap();
+      if (result.success) {
+        dispatch(setCart(result.data));
+        toast.success(result.message || 'Item removed successfully');
       }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error removing item");
+    }
+  };
+  
 
 
-        const handleOpenLogin = () => {
-          dispatch(toggleLoginDialog());
-          console.log('Login Clicked');
-          // setIsLoginOpen(true);
-        };
-      
+  if (cart.items.length === 0) {
+    return (
+      <NoData
+        message="Your cart is empty."
+        description="Looks like you haven't added any items yet. 
+            Explore our collection and find something you love!"
+        buttonText="Browse Books"
+        imageUrl="/images/cart.webp"
+        onClick={() => router.push('/books')}
+      />
+    );
+  }
+
+
+  const handleOpenLogin = () => {
+    dispatch(toggleLoginDialog());
+    console.log('Login Clicked');
+    // setIsLoginOpen(true);
+  };
+
 
 
   if (!user) {
@@ -86,38 +112,165 @@ const page = () => {
 
 
 
-        const handleAddToWishList = async (id:string) => {
-            try{
-              const isWishlist = wishlist.some((item)=>
-              item.products.includes(id))
-              if(isWishlist){
-                const result = await removeFromWishlistMutation({ productId: id }).unwrap()
-                if(result.success){
-                  dispatch(removeFromWishlist(id))
-                  toast.success("Remove from WishList")
-                }else{
-                  throw new Error(result.message || "Failed to remove from wishList")
-                }
-              }else{
-               const result =  await addToWishlistMutation({ productId: id }).unwrap();
-      
-                if(result.success){
-                  dispatch(addToWishlist(result.data))
-      
-                  toast.success("Add from WishList")
-                }else{
-                  throw new Error(result.message || "Failed to Add from wishList")
-                }
-              }
-            }catch(error){
-              const errorMessage = (error as any)?.data?.message || "An unexpected error occurred";
-                  toast.error(errorMessage) 
-            }
-          }
+  const handleAddToWishList = async (id: string) => {
+    try {
+      const isWishlist = wishlist.some((item) =>
+        item.products.includes(id))
+      if (isWishlist) {
+        const result = await removeFromWishlistMutation({ productId: id }).unwrap()
+        if (result.success) {
+          dispatch(removeFromWishlist(id))
+          toast.success("Remove from WishList")
+        } else {
+          throw new Error(result.message || "Failed to remove from wishList")
+        }
+      } else {
+        const result = await addToWishlistMutation({ productId: id }).unwrap();
 
+        if (result.success) {
+          dispatch(addToWishlist(result.data))
+
+          toast.success("Add from WishList")
+        } else {
+          throw new Error(result.message || "Failed to Add from wishList")
+        }
+      }
+    } catch (error) {
+      const errorMessage = (error as any)?.data?.message || "An unexpected error occurred";
+      toast.error(errorMessage)
+    }
+  }
+
+  const totalAmount = cart.items.reduce((acc, item) => acc + (item.product.finalPrice * item.quantity), 0)
+  const totalOriginalAmount = cart.items.reduce((acc, item) => acc + (item.product.price * item.quantity), 0)
+  const totalDiscount = totalOriginalAmount - totalAmount
+
+  const shippingCharge = cart.items.map(item => {
+    const shippingCharges = item.product.shippingCharges;
+    return shippingCharges && typeof shippingCharges === 'string' && shippingCharges.toLowerCase() === 'free'
+      ? 0
+      : parseFloat(shippingCharges) || 0;
+  });
+
+  const MaximumShippingCharge = Math.max(...shippingCharge, 0)
+  const finalAmount = totalAmount + MaximumShippingCharge
+
+  const handleProceedToCheckout = async () => {
+      if(step === 'cart'){
+        try{
+          const result = await createOrUpdateOrderMutation({data:{item:cart.items, totalAmount:totalAmount}}).unwrap();
+          if(result.success){
+            toast.success("Order created successfully")
+            dispatch(setOrderId(result.data._id))
+            dispatch(setCheckoutStep("addresses"))
+          }else{
+            throw new Error(result.message)
+          }
+        } catch(error){
+            toast.error("Failed to create  Order")
+        }
+      }else if(step === 'addresses'){
+          if(selectedAddress){
+            dispatch(setCheckoutStep("payment"))
+          }else{
+            setShowAddressDialog(true)
+          }
+      }else if(step === 'payment'){
+        handlePayment()
+      }
+  }
+
+  const handleSelectAddress = async (address:Address) => {
+      setSelectedAddress(address)
+      setShowAddressDialog(false)
+      if(orderId){
+        try{
+          await createOrUpdateOrderMutation({updates:{orderId, shippingAddress:address}}).unwrap()
+          toast.success('Address updated successfully')
+        }catch(error){
+          console.log(error)
+          toast.error('Failed to update Address')
+        }
+      }
+  }
+
+
+ 
+  const handlePayment = async() => {
+
+  }
   return (
-    <div>
-      
+    <div className='min-h-screen bg-white'>
+      <div className='bg-gray-100 py-4 px-6 mb-8'>
+        <div className='container mx-auto  flex items-center'>
+          <ShoppingCart className='h-6 w-6 mr-2 text-gray-600' />
+          <span className='text-lg font-semibold text-gray-800'>
+            {cart.items.length} {cart.items.length === 1 ? "item" : "items"} in your cart
+          </span>
+        </div>
+      </div>
+      <div className='container mx-auto px-4 max-w-6xl'>
+        <div className='mb-8'>
+          <div className='flex justify-center items-center gap-4'>
+            <div className='flex items-center gap-2'>
+              <div className={`rounded-full p-3 ${step === "cart" ? "bg-blue-600 text-gray-100" : "bg-blue-200 text-gray-600"}`}>
+                <ShoppingCart className='h-6 w-6' />
+              </div>
+              <span className='font-medium hidden md:inline'>
+                cart
+              </span>
+            </div>
+            <ChevronRight className='h-5 w-5 text-gray-400' />
+            <div className='flex items-center gap-2'>
+              <div className={`rounded-full p-3 ${step === "addresses" ? "bg-blue-600 text-gray-100" : "bg-blue-200 text-gray-600"}`}>
+                <MapPin className='h-6 w-6' />
+              </div>
+              <span className='font-medium hidden md:inline'>
+                Address
+              </span>
+            </div>
+            <ChevronRight className='h-5 w-5 text-gray-400' />
+            <div className='flex items-center gap-2'>
+              <div className={`rounded-full p-3 ${step === "payment" ? "bg-blue-600 text-gray-100" : "bg-blue-200 text-gray-600"}`}>
+                <CreditCard className='h-6 w-6' />
+              </div>
+              <span className='font-medium hidden md:inline'>
+                cart
+              </span>
+            </div>
+
+          </div>
+        </div>
+        <div className='grid gap-8 lg:grid-cols-3'>
+          <div className='lg:col-span-2'>
+            <Card className='shadow-lg'>
+              <CardHeader>
+                <CardTitle className='text-2xl'>Order Summary</CardTitle>
+                <CardDescription>Review Your items</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <CardItem
+                  items={cart.items}
+                  onRemoveItem={handleRemoveItem}
+                  onToggleWishlist={handleAddToWishList}
+                  wishlist={wishlist} />
+              </CardContent>
+            </Card>
+          </div>
+          <div>
+            <PriceDetails
+            totalOriginalAmount={totalOriginalAmount}
+            totalDiscount={totalDiscount}
+            totalAmount={finalAmount  }
+            shippingCharge={MaximumShippingCharge}
+            itemCount={cart.items.length}
+            isProcessing={isProcessing}
+            step={step} 
+            onProceed={handleProceedToCheckout}
+            onBack={()=>dispatch(setCheckoutStep(step === 'addresses' ? 'cart' : 'addresses'))}/>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

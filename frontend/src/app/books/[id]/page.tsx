@@ -182,7 +182,7 @@ const page = () => {
                     <div className='flex gap-2'>
                       <ShareButton url={`${window.location.origin}/books/${book._id}`} title={`Checkout this book : ${book.title}`} text={`I found this intreating BookNEst : ${book.title}`}/>
                       <Button  variant='outline' size='sm' onClick={()=>handleAddToWishList(book._id)} >
-                        <Heart size={20} className={`w-4 h-4 mr-1 fill-red-500 ${wishlist.some((w)=>w.products.includes(book._id)) ?"fill-red-500":" "}`}/>
+                        <Heart size={20} className={`w-4 h-4 mr-1 fill-red-500 ${wishlist.some((w)=>w.products.includes(book._id)) ?"fill-red-500":" fill-white"}`}/>
                         <span className='hidden md:inline'>{wishlist.some((w)=>w.products.includes(book._id)) ?"Remove":"Add"}</span>
                       </Button> 
                     </div>

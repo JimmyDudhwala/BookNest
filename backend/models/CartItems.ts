@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema, model, models } from "mongoose";
 
 export interface ICARTItem extends Document {
+    _id:string,
     product: mongoose.Types.ObjectId;
     quantity: number;
 }

@@ -3,86 +3,81 @@ import Products from "../models/Products";
 import { response } from "../utils/responseHandler";
 import CartItems, { ICARTItem } from "../models/CartItems";
 
+// ✅ Add to cart
+export const addToCart = async (req: Request, res: Response) => {
+  try {
+    const userId = req.id;
+    const { productId, quantity } = req.body;
 
-export const addToCart = async (req:Request, res:Response) => {
-    try{
+    const product = await Products.findById(productId);
+    if (!product) return response(res, 400, "Product not found");
 
-        const userId = req.id
-        const {productId, quantity} = req.body
-        const product = await Products.findById(productId)
-
-    if(!product){
-        return response(res,400,"Product not Found")
+    if (product.seller.toString() === userId) {
+      return response(res, 400, "You cannot add your own product to the cart");
     }
 
-    if(product.seller.toString() === userId){
-        return response(res,400,"You can not add your product to cart")
+    let cart = await CartItems.findOne({ user: userId });
+    if (!cart) {
+      cart = new CartItems({ user: userId, items: [] });
     }
 
-    let cart = await CartItems.findOne({user:userId})
+    const existingItem = cart.items.find((item: ICARTItem) =>
+      item.product.toString() === productId
+    );
 
-    if(!cart){
-        cart = new CartItems({user:userId, items:[]})
+    if (existingItem) {
+      existingItem.quantity += quantity;
+    } else {
+      cart.items.push({ product: productId, quantity } as ICARTItem);
     }
 
-    const existingItem = cart.items.find((item : ICARTItem)=>{
-        item.product.toString() === productId
-    })
+    await cart.save();
+    return response(res, 200, "Item added to cart successfully", cart);
+  } catch (error) {
+    console.error(error);
+    return response(res, 500, "Internal Server Error, please try again");
+  }
+};
 
-    if(existingItem){
-        existingItem.quantity+=quantity
-    }else{
-        const newItem = {
-            product:productId,
-            quantity:quantity
-        }
-        cart.items.push(newItem as ICARTItem)
-    }
-    
-    await cart.save()
-    return response(res,200,'Item Added to cart Successfully',cart)
-}catch(error){
-    console.log(error);
-    return response(res, 500, "Internal Server Error, please try again")
-}
-}
-
+// ✅ Remove from cart
 export const removeFromCart = async (req: Request, res: Response) => {
-    try{
-
-        const userId = req.id
-        const {productId} = req.params
-        
-    let cart = await CartItems.findOne({user:userId})
-
-    if(!cart){
-       return response(res,400,"cart not found for this user")
-    }
-
-    cart.items = cart.items.filter((item:ICARTItem)=> item.product.toString() !== productId)
-
-    await cart.save()
-    return response(res,200,'Item removed to cart Successfully')
-    }catch(error){
-        console.log(error);
-        return response(res, 500, "Internal Server Error, please try again")
-    }
-}
-
-export const getCartByUser = async (req: Request, res: Response) => {
     try {
       const userId = req.id;
+      const { cartItemId } = req.params;
   
-      let cart = await CartItems.findOne({ user: userId });
+      const cart = await CartItems.findOne({ user: userId });
+      if (!cart) return response(res, 400, "Cart not found");
   
-      if (!cart) {
-        return response(res, 400, "Cart is empty", { item: [] });
-      }
+      cart.items = cart.items.filter(
+        (item: ICARTItem) => item._id.toString() !== cartItemId
+      );
   
-      return response(res, 200, "User cart fetched successfully", cart);
+      await cart.save();
+      return response(res, 200, "Item removed successfully", cart);
     } catch (error) {
-      console.log(error);
-      return response(res, 500, "Internal Server Error, please try again");
+      console.error(error);
+      return response(res, 500, "Internal Server Error");
     }
   };
   
+
+// ✅ Get cart
+export const getCartByUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.id;
+
+    let cart = await CartItems.findOne({ user: userId }).populate("items.product");
+
+    if (!cart) {
+      return response(res, 200, "Cart is empty", { items: [] });
+    }
+
+    // Optionally remove items with missing product references
+    cart.items = cart.items.filter((item: ICARTItem) => item.product !== null);
+
+    return response(res, 200, "User cart fetched successfully", cart);
+  } catch (error) {
+    console.error(error);
+    return response(res, 500, "Internal Server Error, please try again");
+  }
+};

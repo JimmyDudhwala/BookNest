@@ -204,7 +204,7 @@ for (let [key, value] of formData.entries()) {
                     name="condition"
                     control={control}
                     render={({ field }) => (
-                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-6">
+                      <RadioGroup key="field" onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-6">
                         {
                           filters.condition.map((condition)=>(
                             <div className="flex items-center space-x-2">

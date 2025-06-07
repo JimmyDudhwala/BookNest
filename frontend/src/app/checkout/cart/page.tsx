@@ -83,18 +83,6 @@ useEffect(()=> {
   
 
 
-  if (cart.items.length === 0) {
-    return (
-      <NoData
-        message="Your cart is empty."
-        description="Looks like you haven't added any items yet. 
-            Explore our collection and find something you love!"
-        buttonText="Browse Books"
-        imageUrl="/images/cart.webp"
-        onClick={() => router.push('/books')}
-      />
-    );
-  }
 
 
   const handleOpenLogin = () => {
@@ -171,7 +159,7 @@ useEffect(()=> {
         const result = await createOrUpdateOrderMutation({
           orderData: {
             items: cart.items, // Note: changed from 'item' to 'items'
-            totalAmount: totalAmount
+            totalAmount: finalAmount
           }
           // orderId: orderId // Include this if updating existing order
         }).unwrap();
@@ -227,6 +215,20 @@ useEffect(()=> {
 
 
       const SellerPhoneNumber = useSelector((state: RootState) => state.user.user)
+
+      if (cart.items.length === 0) {
+        return (
+          <NoData
+            message="Your cart is empty."
+            description="Looks like you haven't added any items yet. 
+                Explore our collection and find something you love!"
+            buttonText="Browse Books"
+            imageUrl="/images/cart.webp"
+            onClick={() => router.push('/books')}
+          />
+        );
+      }
+    
 
   return (
     <div className='min-h-screen bg-white'>

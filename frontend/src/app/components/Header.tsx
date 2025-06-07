@@ -103,7 +103,7 @@ const Header = () => {
     ...(user && user
       ? [
           {
-            href: 'account/profile',
+            href: '/account/profile',
             content: (
               <div className="item-center flex space-x-4 border-b p-2">
                 <Avatar className="-ml-2 h-12 w-12 rounded-full">
@@ -124,7 +124,7 @@ const Header = () => {
       : [
           {
             icon: <Lock className="h-5 w-5" />,
-            label: 'Login/Sign Up',
+            label: '/Login/Sign Up',
             onclick: handleLoginClick,
           },
         ]),

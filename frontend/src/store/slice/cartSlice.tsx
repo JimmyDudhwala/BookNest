@@ -1,7 +1,5 @@
 import { CartItem } from "@/lib/types/type";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { useAddToCartMutation } from "../api";
-
 export interface CartState{
     _id:string,
     user:string,

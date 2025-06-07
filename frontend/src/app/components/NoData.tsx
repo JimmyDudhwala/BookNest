@@ -1,4 +1,3 @@
-import { Description } from '@radix-ui/react-dialog'
 import Image from 'next/image'
 import React from 'react'
 

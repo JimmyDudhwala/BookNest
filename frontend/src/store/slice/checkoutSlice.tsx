@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { stat } from "fs"
-
 interface checkoutState{
     step:"cart" | "addresses" | 'payment',
     orderId:string | null,

@@ -258,10 +258,14 @@ const handlePayment = async () => {
           }).unwrap()
 
           if (result.success) {
+          
+            toast.success("Payment Successful")
             dispatch(clearCart())
             dispatch(resetCheckout())
-            toast.success("Payment Successful")
             router.push(`/checkout/payment-success?orderId=${orderId}`)
+            dispatch(clearCart())
+            dispatch(resetCheckout())
+
           } else {
             throw new Error(result.message)
           }

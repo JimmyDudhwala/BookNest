@@ -343,9 +343,9 @@ const Header = () => {
             <Button variant="ghost" className="relative">
               <ShoppingCart className="mr-2 h-5 w-5" />
             </Button>
-            {user && (
+            {user && cartItemCount > 0 &&(
               <span className="absolute left-5 top-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500 px-1 text-xs text-white">
-                2
+                {cartItemCount}
               </span>
             )}
           </div>

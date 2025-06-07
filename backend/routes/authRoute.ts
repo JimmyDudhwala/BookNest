@@ -34,6 +34,8 @@ async (req:Request, res:Response, next:NextFunction) : Promise<void> => {
         const accessToken = await generateToken(user)
         res.cookie('accessToken', accessToken, {
             httpOnly:true,
+            sameSite:"none",
+            secure:true,
             maxAge:24 * 60 * 60 * 1000
         })
 

@@ -8,6 +8,7 @@ import BookLoader from '@/lib/BookLoader'
 import { BookDetails } from '@/lib/types/type'
 import { useAddToCartMutation, useAddToWishlistMutation, useGetProductsByIdQuery, useRemoveFromWishlistMutation } from '@/store/api'
 import { addToCart } from '@/store/slice/cartSlice'
+import { setCheckoutStep } from '@/store/slice/checkoutSlice'
 import {  addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice'
 import { RootState } from '@/store/store'
 import { formatDistanceToNow } from 'date-fns'
@@ -61,6 +62,7 @@ const page = () => {
           }).unwrap()
           if(result.success && result.data){
               dispatch(addToCart(result.data))
+              dispatch(setCheckoutStep("cart"))
               toast.success(result.message || " Added to Cart Successfully")
           }else{
             throw new Error(result.message || "Failed to add Product")

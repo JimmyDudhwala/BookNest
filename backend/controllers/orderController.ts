@@ -34,7 +34,7 @@ export const createOrUpdateOrder = async (req: Request, res: Response) => {
 
         if(paymentDetails){
             order.paymentDetails = paymentDetails 
-            order.paymentStatus = "Complete"
+            order.paymentStatus = "complete"
             order.status = 'processing'
         }
     }else{
@@ -44,7 +44,7 @@ export const createOrUpdateOrder = async (req: Request, res: Response) => {
             totalAmount,
             shippingAddress,
             paymentMethod,
-            paymentStatus: paymentDetails ? 'Complete' : 'pending'
+            paymentStatus: paymentDetails ? 'complete' : 'pending'
         })
     }
 
@@ -72,7 +72,7 @@ export const getOrderbyUser = async (req: Request, res: Response) =>{
      .populate('user', 'name email')
      .populate('shippingAddress')
      .populate({
-        path:'item-product',
+        path:'items.product',
         model:'Product'
      })
      if(!order){
@@ -92,7 +92,7 @@ export const getOrderById = async (req: Request, res: Response) =>{
      .populate('user', 'name email')
      .populate('shippingAddress')
      .populate({
-        path:'item-product',
+        path:'items.product',
         model:'Product'
      })
 

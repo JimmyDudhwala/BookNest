@@ -12,7 +12,7 @@ export interface IOrder extends Document {
     items:IOrderItem[];
     totalAmount:number;
     shippingAddress:mongoose.Types.ObjectId | IADDRESS
-    paymentStatus:'pending' | "failed" | "Complete"
+    paymentStatus:'pending' | "failed" | "complete"
     paymentMethod:string;
     paymentDetails:{
         razorPay_order_id?:string
@@ -30,10 +30,10 @@ const OrderItemsSchema = new Schema<IOrderItem>({
 
 const OrderSchema = new Schema<IOrder>({
     user:{type:Schema.Types.ObjectId, ref:'User', required:true},
-    items:{OrderItemsSchema},
+    items:[OrderItemsSchema],
     totalAmount:{type:Number},
     shippingAddress:{type:Schema.Types.ObjectId, ref:"Address"},
-    paymentStatus:{type:String, enum:["pending", 'complete', 'failed'], default:"pending"},
+    paymentStatus:{type:String, enum:['pending', 'complete', 'failed'], default:'pending'},
     paymentMethod:{type:String},
     paymentDetails:{
         razorPay_order_id:{type:String},

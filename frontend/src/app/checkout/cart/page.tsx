@@ -1,8 +1,11 @@
 'use client'
 import CardItem from '@/app/components/CardItem';
+import CheckoutAddress from '@/app/components/CheckoutAddress';
 import NoData from '@/app/components/NoData';
 import PriceDetails from '@/app/components/PriceDetails';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Address } from '@/lib/types/type';
 import { useAddToWishlistMutation, useCreateOrUpdateOrderMutation, useCreateRazorpayPaymentMutation, useGetCartQuery, useGetOrdersByIdQuery, useRemoveFromCartMutation, useRemoveFromWishlistMutation } from '@/store/api';
 import { setCart } from '@/store/slice/cartSlice';
@@ -10,9 +13,11 @@ import { setCheckoutStep, setOrderId } from '@/store/slice/checkoutSlice';
 import { toggleLoginDialog } from '@/store/slice/userSlice';
 import { addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice';
 import { RootState } from '@/store/store';
+import { Dialog, DialogTitle } from '@radix-ui/react-dialog';
 import { error } from 'console';
 import { Car, ChevronRight, CreditCard, MapPin, ShoppingCart } from 'lucide-react';
 import { steps } from 'motion/react';
+import { Butcherman } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -156,28 +161,42 @@ useEffect(()=> {
   const finalAmount = totalAmount + MaximumShippingCharge
 
   const handleProceedToCheckout = async () => {
-      if(step === 'cart'){
-        try{
-          const result = await createOrUpdateOrderMutation({data:{item:cart.items, totalAmount:totalAmount}}).unwrap();
-          if(result.success){
-            toast.success("Order created successfully")
-            dispatch(setOrderId(result.data._id))
-            dispatch(setCheckoutStep("addresses"))
-          }else{
-            throw new Error(result.message)
+    if(step === 'cart'){
+      try{
+        console.log("clicked")
+        
+        // Fix: Match the RTK Query parameter structure
+        const result = await createOrUpdateOrderMutation({
+          orderData: {
+            items: cart.items, // Note: changed from 'item' to 'items'
+            totalAmount: totalAmount
           }
-        } catch(error){
-            toast.error("Failed to create  Order")
+          // orderId: orderId // Include this if updating existing order
+        }).unwrap();
+        
+        console.log("Frontend mutation completed")
+        console.log(result)
+        
+        if(result.success){
+          toast.success("Order created successfully")
+          dispatch(setOrderId(result.data._id))
+          dispatch(setCheckoutStep("addresses"))
+        }else{
+          throw new Error(result.message)
         }
-      }else if(step === 'addresses'){
-          if(selectedAddress){
-            dispatch(setCheckoutStep("payment"))
-          }else{
-            setShowAddressDialog(true)
-          }
-      }else if(step === 'payment'){
-        handlePayment()
+      } catch(error){
+        console.error("Frontend error:", error) // Use console.error for better visibility
+        toast.error("Failed to create Order")
       }
+    }else if(step === 'addresses'){
+      if(selectedAddress){
+        dispatch(setCheckoutStep("payment"))
+      }else{
+        setShowAddressDialog(true)
+      }
+    }else if(step === 'payment'){
+      handlePayment()
+    }
   }
 
   const handleSelectAddress = async (address:Address) => {
@@ -268,8 +287,65 @@ useEffect(()=> {
             step={step} 
             onProceed={handleProceedToCheckout}
             onBack={()=>dispatch(setCheckoutStep(step === 'addresses' ? 'cart' : 'addresses'))}/>
+
+            {
+              selectedAddress && (
+                <Card className='mt-6 mb-6 shadow-lg'>
+                  <CardHeader>
+                    <CardTitle className='text-xl'>
+                      Delivery Address
+                    </CardTitle>
+                    <CardContent className='space-y-1'>
+                      <p>{
+                        selectedAddress?.state
+                        }</p>
+                        {
+                          selectedAddress?.addressLine1 && (<p>
+                            {selectedAddress.addressLine1}
+                          </p>)
+                        }
+                        {
+                         <p>
+                          {selectedAddress.city}, {selectedAddress.state}{" "},
+                          {selectedAddress.pincode}
+                         </p> 
+                        
+                        }
+                        {
+                          <p>
+                            Phone : {selectedAddress.phoneNumber}
+                          </p>
+                        }
+                        <div>
+                          <Button className="mt-4" variant='outline' onClick={()=>setShowAddressDialog(true)}>
+                            <MapPin className='h-4 w-4 mr-2' /> Change Address
+                          </Button>
+                        </div>
+                    
+                    </CardContent>
+                  </CardHeader>
+                </Card>
+              )
+            }
+
           </div>
         </div>
+
+            <Dialog open={ShowAddressDialog} onOpenChange={setShowAddressDialog}>
+              <DialogContent className='sm:max-w-[600px'>
+
+                <DialogHeader>
+                  <DialogTitle>
+                    Select or Add Delivery  Address
+                  </DialogTitle>
+                </DialogHeader>
+                <CheckoutAddress
+                  onAddressSelect={()=>handleSelectAddress}
+                  selectedAddress={selectedAddress?._id}
+                />
+              </DialogContent>
+            </Dialog>
+
       </div>
     </div>
   )

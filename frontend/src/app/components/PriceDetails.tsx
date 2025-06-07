@@ -59,7 +59,7 @@ const PriceDetails: React.FC<PriceDetailsProp> = ({ totalAmount, totalDiscount, 
                     )}
                 </Button>
                 {
-                    step === "cart" &&(
+                    step !== "cart" &&(
                         <Button
                         variant='outline'
                         className='w-full'

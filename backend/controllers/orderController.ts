@@ -14,7 +14,7 @@ const razorpay  = new Razorpay({
     key_secret:process.env.RAZORPAY_KEY_SECRET as string,
 })
 
-export const createOrUpdateOrder = async (res:Response, req:Request) => {
+export const createOrUpdateOrder = async (req: Request, res: Response) => {
  try{
     const userId = req.id
     const {orderId, shippingAddress, paymentMethod, totalAmount, paymentDetails } = req.body
@@ -62,7 +62,7 @@ export const createOrUpdateOrder = async (res:Response, req:Request) => {
  }
 }
 
-export const getOrderbyUser = async (res:Response, req:Request) =>{
+export const getOrderbyUser = async (req: Request, res: Response) =>{
     try{
         const userId = req.id;
      const order = await Order.find({
@@ -86,7 +86,7 @@ export const getOrderbyUser = async (res:Response, req:Request) =>{
     }
 }
 
-export const getOrderById = async (res:Response, req:Request) =>{
+export const getOrderById = async (req: Request, res: Response) =>{
     try{
      const order = await Order.findById(req.params.id)
      .populate('user', 'name email')

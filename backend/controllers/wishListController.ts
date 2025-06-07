@@ -61,7 +61,7 @@ export const removeFromWishList = async ( req:Request, res:Response) => {
     }
 }
 
-export const getWishListByUser = async (res:Response, req:Request) => {
+export const getWishListByUser = async (req: Request, res: Response) => {
     try{
 
         const userId = req?.id

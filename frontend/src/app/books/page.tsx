@@ -30,8 +30,8 @@ const page = () => {
     const [sortOption, setSortOption] = useState("newest")
     const [isLoding, setIsLoading] = useState(false)
     const [books, setBooks] = useState<BookDetails[]>([])
-    const {data:apiResponse={}, isLoading} = useGetProductsQuery({})
     const router = useRouter()
+    const {data:apiResponse={}, isLoading} = useGetProductsQuery({})
 
     useEffect(()=>{
         if(apiResponse.data){

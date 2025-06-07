@@ -47,7 +47,7 @@ export const addToCart = async (req:Request, res:Response) => {
 }
 }
 
-export const removeFromCart = async (res:Response, req:Request) => {
+export const removeFromCart = async (req: Request, res: Response) => {
     try{
 
         const userId = req.id
@@ -69,22 +69,20 @@ export const removeFromCart = async (res:Response, req:Request) => {
     }
 }
 
-export const getCartByUser = async (res:Response, req:Request) => {
-    try{
-
-        const userId = req.params.userId
-        
-        let cart = await CartItems.findOne({user:userId})
-
-    if(!cart){
-       return response(res,400,"cart is Empty", {item:[]})
+export const getCartByUser = async (req: Request, res: Response) => {
+    try {
+      const userId = req.id;
+  
+      let cart = await CartItems.findOne({ user: userId });
+  
+      if (!cart) {
+        return response(res, 400, "Cart is empty", { item: [] });
+      }
+  
+      return response(res, 200, "User cart fetched successfully", cart);
+    } catch (error) {
+      console.log(error);
+      return response(res, 500, "Internal Server Error, please try again");
     }
-
-    await cart.save()
-    return response(res,200,'User cart get Successfully', cart)
-}catch(error){
-    console.log(error);
-    return response(res, 500, "Internal Server Error, please try again")
-}
-
-}
+  };
+  

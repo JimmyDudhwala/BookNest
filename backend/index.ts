@@ -22,6 +22,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'https://book-nest-silk.vercel.app',
   'https://bookknest.info',
+  'https://www.bookknest.info'
 ];
 
 interface CorsOptions {

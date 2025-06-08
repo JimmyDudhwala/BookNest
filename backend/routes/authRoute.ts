@@ -30,7 +30,7 @@ router.get("/test", (req, res) => {
     environment: {
       googleClientId: process.env.GOOGLE_CLIENT_ID ? "Set" : "Not set",
       googleCallbackUrl: process.env.GOOGLE_CALLBACK_URL,
-      frontendUrl: process.env.FRONTEND_URL,
+      frontendUrl: process.env.FRONTEND_URI,
     },
   })
 })
@@ -49,20 +49,20 @@ router.get("/google", (req, res, next) => {
 
 router.get('/google/callback', 
     passport.authenticate('google', {
-      failureRedirect: process.env.FRONTEND_URL || "/",
+      failureRedirect: process.env.FRONTEND_URI || "/",
       session: false
     }),
     async (req, res, next) => {
       try {
         console.log('=== CALLBACK SUCCESS HANDLER START ===');
         console.log('req.user exists:', !!req.user);
-        console.log('FRONTEND_URL value:', process.env.FRONTEND_URL);
-        console.log('FRONTEND_URL type:', typeof process.env.FRONTEND_URL);
+        console.log('FRONTEND_URL value:', process.env.FRONTEND_URI);
+        console.log('FRONTEND_URL type:', typeof process.env.FRONTEND_URI);
         
         const user = req.user;
         if (!user) {
           console.log('No user found, redirecting to frontend');
-          return res.redirect(process.env.FRONTEND_URL || '/');
+          return res.redirect(process.env.FRONTEND_URI || '/');
         }
         
         console.log('User found, generating token...');
@@ -76,7 +76,7 @@ router.get('/google/callback',
           maxAge: 24 * 60 * 60 * 1000
         });
         
-        const redirectUrl = process.env.FRONTEND_URL;
+        const redirectUrl = process.env.FRONTEND_URI;
         console.log('About to redirect to:', redirectUrl);
         console.log('Redirect URL type:', typeof redirectUrl);
         

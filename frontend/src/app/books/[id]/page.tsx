@@ -9,6 +9,7 @@ import { BookDetails } from '@/lib/types/type'
 import { useAddToCartMutation, useAddToWishlistMutation, useGetProductsByIdQuery, useRemoveFromWishlistMutation } from '@/store/api'
 import { addToCart } from '@/store/slice/cartSlice'
 import { setCheckoutStep } from '@/store/slice/checkoutSlice'
+import { toggleLoginDialog } from '@/store/slice/userSlice'
 import {  addToWishlist, removeFromWishlist } from '@/store/slice/wishlistSlice'
 import { RootState } from '@/store/store'
 import { formatDistanceToNow } from 'date-fns'
@@ -28,6 +29,8 @@ const Page = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isAddToCart, setIsAddToCart] = React.useState(false)
+
+    const user = useSelector((state: RootState) => state.user.user);
 
   const [addToCartMutation] = useAddToCartMutation()
   const [addToWishlistMutation] = useAddToWishlistMutation()
@@ -55,7 +58,13 @@ const Page = () => {
     const handleAddToCart =  async () => {
       if(book){
         setIsAddToCart(true)
+        
         try{
+          if(!user){
+            toast.error("Please Login first")
+            dispatch(toggleLoginDialog())
+            return
+          }
           const result = await addToCartMutation({
              productId:book?._id,
              quantity:1
@@ -77,6 +86,11 @@ const Page = () => {
     }
     const handleAddToWishList = async (id:string) => {
       try{
+        if(!user){
+          toast.error("Please Login first")
+          dispatch(toggleLoginDialog())
+          return
+        }
         const isWishlist = wishlist.some((item)=>
         item.products.includes(id))
         if(isWishlist){

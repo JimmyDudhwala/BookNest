@@ -128,8 +128,8 @@ for (const [key, value] of formData.entries()) {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold text-blue-600">Sell Your Used Books</h1>
-          <p className="text-gray-600 mb-4">Submit a free classified ad to sell your used books for cash in India</p>
+          <h1 className="text-4xl font-bold text-blue-600">Sale Your Used Books</h1>
+          <p className="text-gray-600 mb-4">Submit a free classified ad to Sale your used books for cash in India</p>
           <Link href="#" className="text-blue-500 hover:underline inline-flex items-center">
             Learn how it works
             <ChevronRight className="ml-1 h-4 w-4" />

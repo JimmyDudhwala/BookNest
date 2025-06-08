@@ -245,7 +245,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Link href="/book-sell">
             <Button className="bg-yellow-400 text-gray-900 hover:bg-yellow-500">
-              Sell Used Book
+              Sale Used Book
             </Button>
           </Link>
 

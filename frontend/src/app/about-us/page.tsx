@@ -29,7 +29,7 @@ export default function page() {
               <h3 className="text-xl font-bold text-gray-900 mb-4">Our Mission</h3>
               <p className="text-gray-600 leading-relaxed">
                 At BookKart, we aim to make reading accessible to everyone by providing a platform where people can buy
-                and sell their old books easily.
+                and sale their old books easily.
               </p>
             </CardContent>
           </Card>
@@ -97,7 +97,7 @@ export default function page() {
                 </div>
               </div>
               <h4 className="text-lg font-bold text-gray-900 mb-3">Easy Listing</h4>
-              <p className="text-gray-600 text-sm leading-relaxed">Sell your old books in just a few clicks.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">Sale your old books in just a few clicks.</p>
             </CardContent>
           </Card>
 

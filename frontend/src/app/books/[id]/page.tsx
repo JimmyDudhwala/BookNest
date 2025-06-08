@@ -119,7 +119,7 @@ const Page = () => {
             message="Loading...."
             description="Wait, we are fetching book details"
             onClick={() => router.push("/book-sell")}
-            buttonText="Sell Your First Book"
+            buttonText="Sale Your First Book"
           />
         </div>
       );
@@ -352,7 +352,7 @@ const Page = () => {
       step: "Step 1",
       title: "Seller posts an Ad",
       description:
-        "Seller posts an ad on book kart to sell their used books.",
+        "Seller posts an ad on book kart to Sale their used books.",
       image: { src: "/icons/ads.png", alt: "Post Ad" },
     },
     {

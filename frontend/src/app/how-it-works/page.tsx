@@ -49,7 +49,7 @@ export default function Page() {
       title: "Selling Books",
       icon: Settings,
       color: "bg-purple-100 text-purple-600",
-      description: "List and sell your books",
+      description: "List and sale your books",
     },
     {
       title: "Payments",
@@ -94,7 +94,7 @@ export default function Page() {
       category: "Selling Books",
       question: "How do I list a book for sale?",
       answer:
-        "Go to your account dashboard and click 'Sell a Book'. Fill in the book details including title, author, condition, price, and upload photos. Your listing will be reviewed and published within 24 hours.",
+        "Go to your account dashboard and click 'Sale a Book'. Fill in the book details including title, author, condition, price, and upload photos. Your listing will be reviewed and published within 24 hours.",
     },
     {
       category: "Selling Books",

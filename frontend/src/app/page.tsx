@@ -30,7 +30,7 @@ export default function Home() {
     {
       imageSrc:
         'https://images.unsplash.com/photo-1604866830893-c13cafa515d5?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b25saW5lJTIwc2VsbCUyMGJvb2tzfGVufDB8fDB8fHww',
-      title: 'Where and how to sell old books online?',
+      title: 'Where and how to sale old books online?',
       description:
         'Get started with selling your used books online and earn money from your old books.',
       icon: <BookOpen className="h-6 w-6 text-primary" />,
@@ -48,7 +48,7 @@ export default function Home() {
         'https://images.unsplash.com/photo-1492539438225-2666b2a98f93?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fG9sZCUyMCUyMGJvb2tzfGVufDB8fDB8fHww',
       title: 'What is BookKart?',
       description:
-        'Discover how BookKart helps you buy and sell used books online easily.',
+        'Discover how BookKart helps you buy and sale used books online easily.',
       icon: <Store className="h-6 w-6 text-primary" />,
     },
   ];
@@ -58,14 +58,14 @@ export default function Home() {
       step: 'Step 1',
       title: 'Post an ad for selling used books',
       description:
-        'Post an ad on BookKart describing your book details to sell your old books online.',
+        'Post an ad on BookKart describing your book details to sale your old books online.',
       icon: <Camera className="h-8 w-8 text-primary" />,
     },
     {
       step: 'Step 2',
       title: 'Set the selling price for your books',
       description:
-        'Set the price for your books at which you want to sell them.',
+        'Set the price for your books at which you want to sale them.',
       icon: <Tag className="h-8 w-8 text-primary" />,
     },
     {
@@ -126,7 +126,7 @@ export default function Home() {
         ))}
         <div className="container relative mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
           <h1 className="md:6xl mb-8 text-4xl font-bold">
-            Buy and Sell Old Books Online in India
+            Buy and sale Old Books Online in India
           </h1>
           <div className="flex flex-col gap-6 sm:flex-row">
             <Button
@@ -156,7 +156,7 @@ export default function Home() {
                 <Link href="/book-sell">
                   <div className="text-left">
                     <div className="text-sm opacity-90">Start Selling</div>
-                    <div className="font-semibold">Sell Old Books</div>
+                    <div className="font-semibold">sale Old Books</div>
                   </div>
                 </Link>
               </div>
@@ -174,12 +174,12 @@ export default function Home() {
         </Link>
       </Button>
 
-      {/* How to sell Section  */}
+      {/* How to Sale Section  */}
       <section className="bg-amber-50 py-16">
         <div className="container mx-auto px-4">
           <div className="mb-4 text-center">
             <h2 className="mb-4 text-3xl font-bold">
-             How to SELL your old books online on BookKart?
+             How to Sale your old books online on BookKart?
             </h2>
             <p className="mx-auto max-w-2xl text-gray-600">
              Earning money by selling your old books is just 3 steps away from you :)

@@ -18,11 +18,30 @@ const PORT = process.env.PORT || 8080;
 
 const app = express();
 app.use(cookiesParser());
-const corsOptions = {
-  origin: process.env.FRONTEND_URI || 'http://localhost:3000',
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://book-nest-silk.vercel.app',
+  'https://bookknest.info',
+];
+
+interface CorsOptions {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void;
+  credentials: boolean;
+}
+
+const corsOptions: CorsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void): void {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 };
+
 app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(passport.initialize())
 

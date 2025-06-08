@@ -1,9 +1,9 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
+"use client"
+import Image from "next/image"
+import Link from "next/link"
+import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   BookLock,
   ChevronRight,
@@ -18,99 +18,89 @@ import {
   ShoppingCart,
   User,
   User2,
-} from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
-import { DropdownMenuContent } from '@/components/ui/dropdown-menu';
-import { useRouter } from 'next/navigation';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import { logout, toggleLoginDialog } from '@/store/slice/userSlice';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
-import AuthPage from './AuthPage';
-import { useGetCartQuery, useLogoutMutation } from '@/store/api';
-import toast from 'react-hot-toast';
-import { setCart } from '@/store/slice/cartSlice';
-
+} from "lucide-react"
+import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
+import { DropdownMenuContent } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation"
+import { useDispatch, useSelector } from "react-redux"
+import type { RootState } from "@/store/store"
+import { logout, toggleLoginDialog } from "@/store/slice/userSlice"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import AuthPage from "./AuthPage"
+import { useGetCartQuery, useLogoutMutation } from "@/store/api"
+import toast from "react-hot-toast"
+import { setCart } from "@/store/slice/cartSlice"
 
 const Header = () => {
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const isLoginOpen = useSelector(
-    (state: RootState) => state.user.isLoginDialogOpen
-  );
-  const [isDropDownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const isLoginOpen = useSelector((state: RootState) => state.user.isLoginDialogOpen)
+  const [isDropDownOpen, setIsDropdownOpen] = useState(false)
   const [logoutMutation] = useLogoutMutation()
 
-    const user = useSelector((state: RootState) => state.user.user)
+  const user = useSelector((state: RootState) => state.user.user)
 
-    const cartItemCount = useSelector((state:RootState)=>state.cart.items.length)
+  const cartItemCount = useSelector((state: RootState) => state.cart.items.length)
 
+  const userPlaceholder = user?.name
+    ?.split(" ")
+    .map((name: string) => name[0])
+    .join()
 
-  const userPlaceholder = user?.name?.split(" ").map((name:string) => name[0]).join();
-
-  const {data:cartData} = useGetCartQuery(user?._id, {skip:!user})
+  const { data: cartData } = useGetCartQuery(user?._id, { skip: !user })
 
   const [searchTerms, setSearchTerms] = useState("")
 
-  const  handleSearch = () => {
+  const handleSearch = () => {
     router.push(`/books?search=${encodeURIComponent(searchTerms)}`)
   }
 
   const handleLoginClick = () => {
-    dispatch(toggleLoginDialog());
-    setIsDropdownOpen(false);
+    dispatch(toggleLoginDialog())
+    setIsDropdownOpen(false)
 
     // setIsLoginOpen(true);
-  };
+  }
 
-  useEffect(()=>{
-    if(cartData?.success && cartData?.data){
+  useEffect(() => {
+    if (cartData?.success && cartData?.data) {
       dispatch(setCart(cartData.data))
     }
-  },[cartData, dispatch])
+  }, [cartData, dispatch])
 
   const handleProtectionNavigation = (href: string) => {
     if (user) {
-      router.push(href);
-      setIsDropdownOpen(false);
+      router.push(href)
+      setIsDropdownOpen(false)
     } else {
-      dispatch(toggleLoginDialog());
-      setIsDropdownOpen(false);
+      dispatch(toggleLoginDialog())
+      setIsDropdownOpen(false)
     }
-  };
+  }
   const handleLogout = async () => {
-    try{
+    try {
       await logoutMutation({}).unwrap
       dispatch(logout())
       toast.success("user logout Successfully")
       setIsDropdownOpen(false)
-    }catch(error){
+    } catch (error) {
       toast.error("failed to logout" + error)
     }
-  };
+  }
 
   const menuItems = [
     ...(user && user
       ? [
           {
-            href: '/account/profile',
+            href: "/account/profile",
             content: (
               <div className="item-center flex space-x-4 border-b p-2">
                 <Avatar className="-ml-2 h-12 w-12 rounded-full">
                   {user?.profilePicture ? (
-                    <AvatarImage src={user.profilePicture} alt="User Image" />
+                    <AvatarImage src={user.profilePicture || "/placeholder.svg"} alt="User Image" />
                   ) : (
-                    <AvatarFallback className='bg-gray-200 p-5 rounded-full'>{userPlaceholder}</AvatarFallback>
+                    <AvatarFallback className="bg-gray-200 p-5 rounded-full">{userPlaceholder}</AvatarFallback>
                   )}
                 </Avatar>
                 <div className="flex flex-col">
@@ -124,65 +114,67 @@ const Header = () => {
       : [
           {
             icon: <Lock className="h-5 w-5" />,
-            label: 'Login/Sign Up',
+            label: "Login/Sign Up",
             onclick: handleLoginClick,
           },
         ]),
     {
       icon: <User className="h-5 w-5" />,
-      label: 'My Profile',
-      onclick: () => handleProtectionNavigation('/account/profile'),
+      label: "My Profile",
+      onclick: () => handleProtectionNavigation("/account/profile"),
     },
     {
       icon: <Package2 className="h-5 w-5" />,
-      label: 'My orders',
-      onclick: () =>  handleProtectionNavigation('/account/orders'),
+      label: "My orders",
+      onclick: () => handleProtectionNavigation("/account/orders"),
     },
     {
       icon: <Lock className="h-5 w-5" />,
-      label: 'My selling Orders',
-      onclick:  () => handleProtectionNavigation('/account/selling-products'),
+      label: "My selling Orders",
+      onclick: () => handleProtectionNavigation("/account/selling-products"),
     },
     {
       icon: <ShoppingCart className="h-5 w-5" />,
-      label: 'Cart',
-      onclick: () =>  handleProtectionNavigation('/checkout/cart'),
+      label: "Cart",
+      onclick: () => handleProtectionNavigation("/checkout/cart"),
     },
     {
       icon: <Heart className="h-5 w-5" />,
-      label: 'My WishList',
-      onclick: () =>  handleProtectionNavigation('/account/wishlist'),
+      label: "My WishList",
+      onclick: () => handleProtectionNavigation("/account/wishlist"),
     },
     {
       icon: <User2 className="h-5 w-5" />,
-      label: 'About Us',
-      href: '/about-us',
+      label: "About Us",
+      href: "/about-us",
     },
     {
       icon: <FileTerminal className="h-5 w-5" />,
-      label: 'Terms & Used',
-      href: '/terms-of-use',
+      label: "Terms & Used",
+      href: "/terms-of-use",
     },
     {
       icon: <BookLock className="h-5 w-5" />,
-      label: 'Privacy Policy',
-      href: '/privacy-policy',
+      label: "Privacy Policy",
+      href: "/privacy-policy",
     },
     {
       icon: <HelpCircle className="h-5 w-5" />,
-      label: 'Help',
-      href: '/how-it-works',
+      label: "Help",
+      href: "/how-it-works",
     },
-    ...(user && user ?  [
-      {
-        icon: <LogOut className="h-5 w-5" />,
-        label: 'Logout',
-        onclick: handleLogout,
-      },
-    ]: []),
-  ];
+    ...(user && user
+      ? [
+          {
+            icon: <LogOut className="h-5 w-5" />,
+            label: "Logout",
+            onclick: handleLogout,
+          },
+        ]
+      : []),
+  ]
 
-  const MenuItems = ({ classname = '' }) => (
+  const MenuItems = ({ classname = "", onItemClick }: { classname?: string; onItemClick?: () => void }) => (
     <div className={classname}>
       {menuItems?.map((item, index) =>
         item?.href ? (
@@ -190,7 +182,10 @@ const Header = () => {
             href={item.href}
             key={index}
             className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-gray-200"
-            onClick={() => setIsDropdownOpen(false)}
+            onClick={() => {
+              setIsDropdownOpen(false)
+              onItemClick && onItemClick() // Close mobile sheet
+            }}
           >
             {item.icon}
             <span>{item?.label}</span>
@@ -199,29 +194,27 @@ const Header = () => {
           </Link>
         ) : (
           <button
-  key={index}
-  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-gray-200"
-  onClick={() => item.onclick && item.onclick()} // Actually call the function
->
+            key={index}
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-gray-200"
+            onClick={() => {
+              item.onclick && item.onclick()
+              onItemClick && onItemClick() // Close mobile sheet
+            }}
+          >
             {item.icon}
             <span>{item?.label}</span>
             {item.content && <div className="mt-1">{item?.content}</div>}
             <ChevronRight className="ml-auto h-4 w-4" />
           </button>
-        )
+        ),
       )}
     </div>
-  );
+  )
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
       <div className="container mx-auto hidden w-[80%] items-center justify-between p-4 lg:flex">
         <Link href="/" className="flex items-center">
-          <Image
-            src="/images/web-logo.png"
-            width={450}
-            height={100}
-            alt="Logo"
-          />
+          <Image src="/images/web-logo.png" width={450} height={100} alt="Logo" />
         </Link>
         <div className="item-center flex max-w-xl flex-1 justify-center px-4">
           <div className="relative w-full">
@@ -230,7 +223,9 @@ const Header = () => {
               placeholder="Book Name / Author / Subject / publisher"
               className="w-full pr-10"
               value={searchTerms}
-              onChange={(e) => {setSearchTerms(e.target.value)}}
+              onChange={(e) => {
+                setSearchTerms(e.target.value)
+              }}
             />
             <Button
               size="icon"
@@ -244,9 +239,7 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-4">
           <Link href="/book-sell">
-            <Button className="bg-yellow-400 text-gray-900 hover:bg-yellow-500">
-              Sale Used Book
-            </Button>
+            <Button className="bg-yellow-400 text-gray-900 hover:bg-yellow-500">Sale Used Book</Button>
           </Link>
 
           <DropdownMenu open={isDropDownOpen} onOpenChange={setIsDropdownOpen}>
@@ -254,7 +247,7 @@ const Header = () => {
               <Button variant="ghost">
                 <Avatar className="h-8 w-8 rounded-full">
                   {user?.profilePicture ? (
-                    <AvatarImage src={user.profilePicture} alt="User Image" />
+                    <AvatarImage src={user.profilePicture || "/placeholder.svg"} alt="User Image" />
                   ) : userPlaceholder ? (
                     <AvatarFallback>{userPlaceholder}</AvatarFallback>
                   ) : (
@@ -266,7 +259,7 @@ const Header = () => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="w-80 p-2">
-              <MenuItems />
+              <MenuItems onItemClick={() => {}} />
             </DropdownMenuContent>
           </DropdownMenu>
           <Link href="/checkout/cart">
@@ -299,15 +292,14 @@ const Header = () => {
             </SheetHeader>
             <SheetHeader>
               <div className="border-b p-4">
-                <Image
-                  src="/images/web-logo.png"
-                  alt="logo"
-                  width={150}
-                  height={40}
-                  className="h-10 w-auto"
-                />
+                <Image src="/images/web-logo.png" alt="logo" width={150} height={40} className="h-10 w-auto" />
               </div>
-              <MenuItems classname="py-2" />
+              <MenuItems
+                classname="py-2"
+                onItemClick={() => {
+                  /* Close sheet logic if needed */
+                }}
+              />
             </SheetHeader>
           </SheetContent>
         </Sheet>
@@ -326,13 +318,16 @@ const Header = () => {
               type="text"
               placeholder="Book Name / Author / Subject / publisher"
               className="w-full pr-10"
-              value=""
-              onChange={() => {}}
+              value={searchTerms}
+              onChange={(e) => {
+                setSearchTerms(e.target.value)
+              }}
             />
             <Button
               size="icon"
               variant="ghost"
               className="absolute right-0 top-1/2 -translate-y-1/2"
+              onClick={handleSearch}
             >
               <Search className="h-5 w-5" />
             </Button>
@@ -343,7 +338,7 @@ const Header = () => {
             <Button variant="ghost" className="relative">
               <ShoppingCart className="mr-2 h-5 w-5" />
             </Button>
-            {user && cartItemCount > 0 &&(
+            {user && cartItemCount > 0 && (
               <span className="absolute left-5 top-2 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-red-500 px-1 text-xs text-white">
                 {cartItemCount}
               </span>
@@ -351,9 +346,9 @@ const Header = () => {
           </div>
         </Link>
       </div>
-      <AuthPage isLoginOpen={isLoginOpen} setIsLoginOpen={handleLoginClick}/>
+      <AuthPage isLoginOpen={isLoginOpen} setIsLoginOpen={handleLoginClick} />
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

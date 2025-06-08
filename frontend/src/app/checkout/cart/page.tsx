@@ -133,7 +133,6 @@ useEffect(()=> {
 
   const handleOpenLogin = () => {
     dispatch(toggleLoginDialog());
-    console.log('Login Clicked');
     // setIsLoginOpen(true);
   };
 
@@ -199,7 +198,6 @@ useEffect(()=> {
   const handleProceedToCheckout = async () => {
     if(step === 'cart'){
       try{
-        console.log("clicked")
         
         // Fix: Match the RTK Query parameter structure
         const result = await createOrUpdateOrderMutation({
@@ -210,8 +208,6 @@ useEffect(()=> {
           // orderId: orderId // Include this if updating existing order
         }).unwrap();
         
-        console.log("Frontend mutation completed")
-        console.log(result)
         
         if(result.success){
           toast.success("Order created successfully")
@@ -236,7 +232,7 @@ useEffect(()=> {
   }
 
   const handleSelectAddress = async (address: Address) => {
-    console.log("hit")
+   
     setSelectedAddress(address)
     setShowAddressDialog(false)
     if(orderId){
@@ -312,7 +308,7 @@ const handlePayment = async () => {
             throw new Error(result.message)
           }
         } catch (error) {
-          console.error(error)
+         
           toast.error("Payment Successful, but failed to update Order")
         }
       },
@@ -336,7 +332,6 @@ const handlePayment = async () => {
     // 5. Open Razorpay
     razorpay.open()
   } catch (error) {
-    console.error("Payment initialization error:", error)
     toast.error("Failed to initiate payment. Please try again.")
   } finally {
     setIsProcessing(false)

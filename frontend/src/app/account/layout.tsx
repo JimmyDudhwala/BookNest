@@ -58,8 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       toast.success("User logout Successfully")
       router.push("/")
     } catch (error) {
-      toast.error("Failed to logout")
-      console.log(error)
+      toast.error("Failed to logout" + error)
     }
   }
 

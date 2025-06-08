@@ -16,7 +16,6 @@ export const ShareButton :React.FC<RWebShareProp> = ({url, title, text}) => {
                 url: url,
                 title: title
             }}
-            onClick={() => console.log("Shared Successfully")}
         >
             <Button size="sm" variant="outline">
                 <Share2 className="h-4 w-4 mr-2" />

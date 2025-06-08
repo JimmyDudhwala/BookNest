@@ -42,8 +42,6 @@ const CheckoutAddress: React.FC<CheckoutAddressProp> = ({ onAddressSelect, selec
   // Make sure we're accessing the address array correctly
   const addresses = addressData?.data?.address || []
 
-  console.log("Address data from API:", addressData)
-  console.log("Parsed addresses:", addresses)
 
   const AddressFormSchema = zod.object({
     addressLine1: zod.string().min(5, "Address Line 1 must be at least 5 characters"),

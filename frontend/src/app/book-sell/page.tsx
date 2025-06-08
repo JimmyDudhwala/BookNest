@@ -89,9 +89,8 @@ const SellPage = () => {
         data.images.forEach((image) => formData.append("images", image))
       }
 
-      console.log("Form Data to Submit:");
 for (const [key, value] of formData.entries()) {
-  console.log(`${key}:`, value);
+  
 }
 
 

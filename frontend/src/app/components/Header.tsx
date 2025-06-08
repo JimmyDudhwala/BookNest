@@ -69,7 +69,7 @@ const Header = () => {
   const handleLoginClick = () => {
     dispatch(toggleLoginDialog());
     setIsDropdownOpen(false);
-    console.log('Login Clicked');
+
     // setIsLoginOpen(true);
   };
 
@@ -124,7 +124,7 @@ const Header = () => {
       : [
           {
             icon: <Lock className="h-5 w-5" />,
-            label: '/Login/Sign Up',
+            label: 'Login/Sign Up',
             onclick: handleLoginClick,
           },
         ]),

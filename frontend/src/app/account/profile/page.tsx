@@ -83,8 +83,7 @@ const ProfilePage = () => {
       toast.success("Profile updated successfully")
       setIsEditing(false)
     } catch (error) {
-      toast.error("Failed to update profile")
-      console.error(error)
+      toast.error("Failed to update profile" + error)
     }
   }
 

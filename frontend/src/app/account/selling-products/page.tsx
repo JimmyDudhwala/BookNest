@@ -14,8 +14,7 @@ const Page = () => {
   const { data: products, isLoading, refetch } = useGetProductsBySellerIdQuery(user?._id)
 
   const productList = products?.data
-  console.log(productList)
-  console.log(products)
+
   const [deleteProduct] = useDeleteProductByIdMutation()
 
   const handleDelete = async (productId: string) => {

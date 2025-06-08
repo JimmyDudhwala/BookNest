@@ -156,7 +156,6 @@ export default function Page() {
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission here
-    console.log("Contact form submitted:", contactForm)
     // Reset form
     setContactForm({ name: "", email: "", subject: "", message: "" })
     alert("Thank you for your message! We'll get back to you soon.")

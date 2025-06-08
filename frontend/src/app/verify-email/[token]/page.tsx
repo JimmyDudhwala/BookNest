@@ -12,7 +12,7 @@ import Link from "next/link"
 
 const VerifyEmailPage: React.FC = () => {
   const {token} = useParams<{ token: string }>()
-  console.log(token)
+ 
   const dispatch = useDispatch()
   const [verifyEmail] = useVerifyEmailMutation()
   const isVerifyEmail = useSelector((state: RootState) => state.user.isEmailVerified)

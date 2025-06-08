@@ -100,27 +100,21 @@ const AuthPage: React.FC<AuthPageProps> = ({isLoginOpen, setIsLoginOpen}) => {
   }
 
   const handleGoogleLogin = async() => {
+    console.log('handleGoogleLogin called'); // Add this
     setGoogleLoading(true)
 
     try{
-      router.push(`${BASE_URL}/auth/google`)
-
-
-      dispatch(authState())
-      setTimeout(()=>{
-        toast.success("google login successfully")
-        setIsLoginOpen(false)
-      }, 3000)
+        console.log('About to redirect to Google auth'); // Add this
+        window.location.href = `https://booknest-t9ro.onrender.com/api/auth/google`
+        console.log('Redirect executed'); // This might not show due to redirect
     }catch(errors){ 
-      toast.error("Google Login failed" + errors)
+        console.error('Error in handleGoogleLogin:', errors); // Add this
+        toast.error("Google Login failed" + errors)
     }
     finally{
-      setGoogleLoading(false)
-
+        setGoogleLoading(false)
     }
-
 }
-
 const onSubmitForgotPassword = async(data:ForgotForm) => {
   setForgetLoading(true)
 

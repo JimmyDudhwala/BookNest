@@ -154,13 +154,14 @@ export const resetPassword = async (req: Request, res: Response) => {
 
 export const logout = async (req:Request, res:Response) => {
     try{
-        res.clearCookie("accessToken",{
-            httpOnly:true,
-            sameSite:"none",
-            secure:true,
-        })
-
-        return response(res,200,"successfully Logout")
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            path: "/", // or exact path used when setting it
+          });
+          return response(res, 200, "Successfully logged out");
+          
     }catch(error){
         console.log(error);
         return response(res, 500, "Internal Server Error, please try again")

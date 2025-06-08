@@ -66,7 +66,7 @@ router.get('/google/callback',
         }
         
         console.log('User found, generating token...');
-        const accessToken = await generateToken(user);
+        const accessToken = await generateToken(user as IUSER);
         console.log('Token generated successfully');
         
         res.cookie('accessToken', accessToken, {
@@ -80,7 +80,7 @@ router.get('/google/callback',
         console.log('About to redirect to:', redirectUrl);
         console.log('Redirect URL type:', typeof redirectUrl);
         
-        res.redirect(redirectUrl);
+        res.redirect(redirectUrl || '/');
         console.log('Redirect executed');
         
       } catch (error) {

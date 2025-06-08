@@ -111,7 +111,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
 
   const handleGoogleLogin = () => {
     setGoogleLoading(true)
-    window.location.href = `${BASE_URL}/api/auth/google`
+    window.location.href = `${BASE_URL}/auth/google`
   }
 
   const onSubmitForgotPassword = async (data: ForgotForm) => {

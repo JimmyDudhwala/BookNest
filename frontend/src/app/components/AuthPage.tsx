@@ -112,6 +112,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const handleGoogleLogin = () => {
     setGoogleLoading(true)
     window.location.href = `${BASE_URL}/auth/google`
+    toast.success("Login successful")
+    dispatch(toggleLoginDialog())
+    dispatch(authState())
+    window.location.reload()
   }
 
   const onSubmitForgotPassword = async (data: ForgotForm) => {

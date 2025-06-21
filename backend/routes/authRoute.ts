@@ -56,8 +56,8 @@ router.get(
         maxAge: 24 * 60 * 60 * 1000,
       })
 
-      console.log(accessToken)
-      res.redirect(`${process.env.FRONTEND_URI}/auth/google/callback`);
+      res.redirect(`${process.env.FRONTEND_URI}/auth/google/callback?token=${accessToken}`);
+
     } catch (error) {
       next(error)
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
@@ -10,27 +10,33 @@ import { authState, toggleLoginDialog } from "@/store/slice/userSlice";
 const GoogleCallback = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    const token = Cookies.get("accessToken");
-    console.log("Token from cookie:", token);
+    const checkToken = () => {
+      const token = Cookies.get("accessToken");
+      console.log("Checking token:", token);
 
-    if (token) {
-      toast.success("Google Login Successful!");
-      dispatch(authState());
-      dispatch(toggleLoginDialog());
-      setTimeout(() => {
-        router.push("/"); // or '/dashboard'
-      }, 1500);
-    } else {
-      toast.error("Google Login Failed");
-      router.push("/login");
-    }
+      if (token) {
+        toast.success("Google Login Successful!");
+        dispatch(authState());
+        dispatch(toggleLoginDialog());
+        setChecking(false);
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
+      } else {
+        // Try again after 500ms
+        setTimeout(checkToken, 500);
+      }
+    };
+
+    checkToken();
   }, []);
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <p>Processing Google login...</p>
+      <p>{checking ? "Processing Google login..." : "Redirecting..."}</p>
     </div>
   );
 };

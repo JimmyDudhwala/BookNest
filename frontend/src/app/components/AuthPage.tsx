@@ -115,18 +115,18 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   };
   
 
-  useEffect(() => {
-    const token = Cookies.get("accessToken");
-    if (token) {
-      // Do after-login things:
-      toast.success("Login successful!");
-      dispatch(toggleLoginDialog());
-      dispatch(authState());
-      window.location.reload();
-    } else {
-      toast.error("Login failed");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = Cookies.get("accessToken");
+  //   if (token) {
+  //     // Do after-login things:
+  //     toast.success("Login successful!");
+  //     dispatch(toggleLoginDialog());
+  //     dispatch(authState());
+  //     window.location.reload();
+  //   } else {
+  //     toast.error("Login failed");
+  //   }
+  // }, []);
   
   const onSubmitForgotPassword = async (data: ForgotForm) => {
     setForgetLoading(true)

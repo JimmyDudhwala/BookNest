@@ -15,7 +15,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux"
-
+import Cookies from "js-cookie"
 interface AuthPageProps {
   isLoginOpen: boolean
   setIsLoginOpen: (open: boolean) => void
@@ -112,10 +112,12 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   const handleGoogleLogin = () => {
     setGoogleLoading(true)
     window.location.href = `${BASE_URL}/auth/google`
+    const token = Cookies.get("accessToken")
+    if(token){
     toast.success("Login successful")
     dispatch(toggleLoginDialog())
     dispatch(authState())
-    window.location.reload()
+    window.location.reload()}
   }
 
   const onSubmitForgotPassword = async (data: ForgotForm) => {

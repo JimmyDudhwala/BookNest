@@ -57,8 +57,7 @@ router.get(
       })
 
       console.log(accessToken)
-
-      res.redirect(process.env.FRONTEND_URI || "/")
+      res.redirect(`${process.env.FRONTEND_URI}/auth/google/callback`);
     } catch (error) {
       next(error)
     }

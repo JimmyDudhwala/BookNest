@@ -56,6 +56,8 @@ router.get(
         maxAge: 24 * 60 * 60 * 1000,
       })
 
+      console.log(accessToken)
+
       res.redirect(process.env.FRONTEND_URI || "/")
     } catch (error) {
       next(error)

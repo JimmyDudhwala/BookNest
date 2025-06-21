@@ -126,7 +126,7 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
     } else {
       toast.error("Login failed");
     }
-  }, [handleGoogleLogin]);
+  }, []);
   
   const onSubmitForgotPassword = async (data: ForgotForm) => {
     setForgetLoading(true)

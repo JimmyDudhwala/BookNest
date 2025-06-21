@@ -11,7 +11,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux"
@@ -110,16 +110,24 @@ const AuthPage: React.FC<AuthPageProps> = ({ isLoginOpen, setIsLoginOpen }) => {
   }
 
   const handleGoogleLogin = () => {
-    setGoogleLoading(true)
-    window.location.href = `${BASE_URL}/auth/google`
-    const token = Cookies.get("accessToken")
-    if(token){
-    toast.success("Login successful")
-    dispatch(toggleLoginDialog())
-    dispatch(authState())
-    window.location.reload()}
-  }
+    setGoogleLoading(true);
+    router.push(`${BASE_URL}/auth/google`); // full redirect
+  };
+  
 
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (token) {
+      // Do after-login things:
+      toast.success("Login successful!");
+      dispatch(toggleLoginDialog());
+      dispatch(authState());
+      window.location.reload();
+    } else {
+      toast.error("Login failed");
+    }
+  }, [handleGoogleLogin]);
+  
   const onSubmitForgotPassword = async (data: ForgotForm) => {
     setForgetLoading(true)
 

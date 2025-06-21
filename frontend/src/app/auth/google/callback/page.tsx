@@ -19,6 +19,7 @@ const GoogleCallback = () => {
       toast.success("Google Login Successful!");
       dispatch(authState());
       dispatch(toggleLoginDialog());
+      dispatch(toggleLoginDialog());
       setTimeout(() => {
         router.push("/");
       }, 1500);

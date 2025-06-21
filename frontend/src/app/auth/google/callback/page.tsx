@@ -16,7 +16,6 @@ const GoogleCallback = () => {
     console.log("Token from URL:", token);
 
     if (token) {
-      Cookies.set("accessToken", token); // set manually in frontend
       toast.success("Google Login Successful!");
       dispatch(authState());
       dispatch(toggleLoginDialog());
